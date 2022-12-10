@@ -2,16 +2,21 @@
 
 <div *ngFor="let product of products">
   <h3>
-    <a [title]="product.name + ' details'">{{product.name}}</a>
+    <a [title]="product.name + ' details'" href="#">{{product.name}}</a>
   </h3>
 
   <p *ngIf="product.description">
     Description: {{product.description}}
   </p>
 
-  <vaadin-button (click)="share()">
-    Share
-  </vaadin-button>
+  <vaadin-horizontal-layout theme="spacing">
+    <vaadin-button (click)="addToCart(product)">
+      Add to cart
+    </vaadin-button>
+    <vaadin-button (click)="share()">
+      Share
+    </vaadin-button>
+  </vaadin-horizontal-layout>
 
   <app-product-alerts [product]="product" (notify)="onNotify()"></app-product-alerts>
 </div>

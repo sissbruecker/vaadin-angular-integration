@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, Injector} from '@angular/core';
+import '@vaadin/app-layout';
+import {createCustomElement} from "@angular/elements";
 
 @Component({
   selector: 'app-root',
@@ -6,6 +8,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+
+  constructor(injector: Injector) {
+    // Example of how to create custom element from Angular component,
+    // which could be used in a renderer function
+
+    // let cartGridActionsElement = createCustomElement(CartGridActionsComponent, {injector});
+    // customElements.define('cart-grid-actions', cartGridActionsElement);
+  }
 }
 
 

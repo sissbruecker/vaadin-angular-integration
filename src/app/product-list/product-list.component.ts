@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import '@vaadin/button';
+import '@vaadin/horizontal-layout';
 
-import { products } from '../products';
+import {Product, products} from '../products';
 import {Notification} from "@vaadin/notification";
+import {CartService} from "../cart.service";
 
 @Component({
   selector: 'app-product-list',
@@ -12,12 +14,20 @@ import {Notification} from "@vaadin/notification";
 export class ProductListComponent {
   products = products;
 
+  constructor(private cartService: CartService) {
+  }
+
   share() {
     Notification.show("The product has been shared!", {theme: 'primary'})
   }
 
   onNotify() {
     Notification.show("You will be notified when the product goes on sale", {theme: 'primary'})
+  }
+
+  addToCart(product: Product) {
+    this.cartService.addToCart(product);
+    Notification.show("Your product has been added to the cart!", {theme: 'primary'})
   }
 }
 

@@ -1,0 +1,17 @@
+<vaadin-button theme="icon" (click)="showNewsletterDialog()">
+  <vaadin-icon icon="vaadin:newspaper" slot="prefix"></vaadin-icon>
+  Newsletter
+</vaadin-button>
+
+<vaadin-dialog [opened]="newsletterDialogOpened" (opened-changed)="newsletterDialogOpened = $event.detail.value">
+  <h4 vaadin-dialog-header-renderer class="header">Newsletter Signup</h4>
+  <div vaadin-dialog-renderer>
+    <p>Enter your email below to sign up for our newsletter:</p>
+    <vaadin-text-field [value]="newsletterMail"
+                       (value-changed)="newsletterMail = $event.detail.value"></vaadin-text-field>
+  </div>
+  <vaadin-horizontal-layout vaadin-dialog-footer-renderer theme="spacing">
+    <vaadin-button (click)="handleNewsletterCancel()">Cancel</vaadin-button>
+    <vaadin-button theme="primary" (click)="handleNewsletterSignup()">Sign up</vaadin-button>
+  </vaadin-horizontal-layout>
+</vaadin-dialog>
