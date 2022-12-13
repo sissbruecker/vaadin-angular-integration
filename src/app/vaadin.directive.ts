@@ -127,16 +127,23 @@ export class VaadinGridRendererDirective {
       _: unknown,
       model: GridItemModel<unknown>
     ) => {
+      // Run rendering in Angular zone
+      // Otherwise change detection does not trigger after events
+      // initiated from rendered cell content (e.g. button clicks).
       this.zone.run(() => {
         const embeddedViewRef = this.viewContainerRef.createEmbeddedView(
           template,
           { model }
         );
-        // embeddedViewRef.markForCheck();
-        // embeddedViewRef.detectChanges();
 
-        // Detach immediately, so element and Angular wrapper can be cleaned up
-        // when cell is discarded or re-rendered
+        // Run change detection once and detach immediately.
+        // This avoids having to clean up the Angular view when the grid
+        // decides to discard or re-render the cell.
+        // This also prevents any future change detection, instead grid
+        // needs to be forced to re-render by changing its items, or
+        // invalidating cache when using a data provider.
+        // TODO: Check if views can be detached automatically when the view, or its cell, is removed from the DOM
+        embeddedViewRef.detectChanges();
         embeddedViewRef.detach();
 
         root.innerHTML = '';
