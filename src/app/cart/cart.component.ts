@@ -1,6 +1,4 @@
 import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   OnInit,
 } from '@angular/core';
@@ -56,10 +54,11 @@ export class CartComponent implements OnInit {
   paymentOptions = paymentOptions;
   items: Product[] = [];
 
+  message: string = 'Initial message';
+
   constructor(
     public cartService: CartService,
     private formBuilder: FormBuilder,
-    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   get nameField() {
@@ -99,10 +98,8 @@ export class CartComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.cartService.items$.subscribe(items => {
+    this.cartService.items$.subscribe((items) => {
       this.items = items;
-      // TODO: fix change detection issue
-      this.changeDetectorRef.detectChanges();
     });
   }
 
@@ -125,6 +122,10 @@ export class CartComponent implements OnInit {
       );
       this.checkoutForm.reset();
     }
+  }
+
+  updateMessage() {
+    this.message = this.message + ".";
   }
 
   priceRenderer(root: HTMLElement, _: unknown, model: GridItemModel<Product>) {

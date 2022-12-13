@@ -23,6 +23,11 @@
       <vaadin-button theme="icon error" (click)="onRemoveItem(item)">
         <vaadin-icon icon="vaadin:close-small"></vaadin-icon>
       </vaadin-button>
+      <vaadin-button theme="icon" (click)="updateMessage()">
+        <vaadin-icon icon="vaadin:refresh"></vaadin-icon>
+      </vaadin-button>
     </ng-template>
   </vaadin-grid-column>
 </vaadin-grid>
+
+<div>{{message}}</div>

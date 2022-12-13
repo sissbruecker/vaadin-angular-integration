@@ -3,6 +3,7 @@ import {
   Directive,
   ElementRef,
   forwardRef,
+  NgZone,
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
@@ -114,40 +115,42 @@ export class VaadinDialogFooterRendererDirective {
 export class VaadinGridRendererDirective {
   @ContentChild('cell')
   public set cell(template: TemplateRef<any>) {
+    const column = this.elementRef.nativeElement;
+
     if (!template) {
+      column.renderer = null;
       return;
     }
 
-    const column = this.elementRef.nativeElement;
     column.renderer = (
       root: HTMLElement,
       _: unknown,
       model: GridItemModel<unknown>
     ) => {
-      if (!template) {
-        console.warn('Cell template not found');
-        return;
-      }
+      this.zone.run(() => {
+        const embeddedViewRef = this.viewContainerRef.createEmbeddedView(
+          template,
+          { model }
+        );
+        // embeddedViewRef.markForCheck();
+        // embeddedViewRef.detectChanges();
 
-      const embeddedViewRef = this.viewContainerRef.createEmbeddedView(
-        template,
-        { model }
-      );
-      embeddedViewRef.detectChanges();
-      // Detach immediately, as we only need to access the generated DOM nodes,
-      // and have no other way of detecting when a rendered view is not used anymore
-      embeddedViewRef.detach();
+        // Detach immediately, so element and Angular wrapper can be cleaned up
+        // when cell is discarded or re-rendered
+        embeddedViewRef.detach();
 
-      root.innerHTML = '';
-      embeddedViewRef.rootNodes.forEach((rootNode) =>
-        root.appendChild(rootNode)
-      );
+        root.innerHTML = '';
+        embeddedViewRef.rootNodes.forEach((rootNode) =>
+          root.appendChild(rootNode)
+        );
+      });
     };
   }
 
   constructor(
     private elementRef: ElementRef,
-    private viewContainerRef: ViewContainerRef
+    private viewContainerRef: ViewContainerRef,
+    public zone: NgZone
   ) {}
 }
 
