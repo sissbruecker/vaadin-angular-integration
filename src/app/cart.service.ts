@@ -35,6 +35,11 @@ export class CartService {
     this.items.next(this.items.value.filter(item => item !== product));
   }
 
+  raisePrice(product: Product) {
+    product.price = product.price + 1;
+    this.items.next([...this.items.value]);
+  }
+
   getItems() {
     return this.items;
   }

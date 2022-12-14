@@ -111,6 +111,10 @@ export class CartComponent implements OnInit, DoCheck {
     this.cartService.removeFromCart(item);
   }
 
+  onRaisePrice(item: Product) {
+    this.cartService.raisePrice(item);
+  }
+
   onSubmit(): void {
     // Process checkout data here
     this.checkoutForm.markAllAsTouched();
