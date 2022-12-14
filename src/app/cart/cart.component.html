@@ -16,15 +16,19 @@
 </form>
 <br>
 
-<vaadin-grid [items]="items">
+<vaadin-grid [items]="items" [selectedItems]="selectedItems"
+             (selected-items-changed)="selectedItems = $event.detail.value">
+  <vaadin-grid-selection-column></vaadin-grid-selection-column>
   <vaadin-grid-sort-column path="name" header="Product">
     <ng-template #cell let-model="model">
-      <b>{{model.item.name}}</b>
-      <br>
-      <i>{{model.item.description}}</i>
+      <div>
+        <b>{{model.item.name}}</b>
+        <br>
+        <i>{{model.item.description}}</i>
+      </div>
     </ng-template>
     <ng-template #footer>
-      <b>{{items.length}} total products</b>
+      <b>{{selectedItems.length}} products selected</b>
     </ng-template>
   </vaadin-grid-sort-column>
   <vaadin-grid-sort-column path="price" header="Price">

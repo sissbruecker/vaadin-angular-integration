@@ -178,7 +178,7 @@ export class VaadinGridRendererDirective implements OnDestroy {
             model
           );
         } else {
-          this.headerRendering.update(model);
+          // this.headerRendering.update(model);
         }
       });
     };
@@ -207,7 +207,7 @@ export class VaadinGridRendererDirective implements OnDestroy {
             model
           );
         } else {
-          this.footerRendering.update(model);
+          // this.footerRendering.update(model);
         }
       });
     };

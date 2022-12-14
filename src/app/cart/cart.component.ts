@@ -1,18 +1,16 @@
-import {
-  Component, DoCheck,
-  OnInit,
-} from '@angular/core';
+import { Component, DoCheck, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { CartService } from '../cart.service';
 import '@vaadin/grid';
 import '@vaadin/grid/vaadin-grid-filter-column.js';
 import '@vaadin/grid/vaadin-grid-sort-column.js';
+import '@vaadin/grid/vaadin-grid-selection-column.js';
 import '@vaadin/text-field';
 import '@vaadin/select';
 import '@vaadin/button';
 import '@vaadin/icon';
 import '@vaadin/icons';
-import { GridItemModel } from '@vaadin/grid';
+import { GridItemModel, GridSelectedItemsChangedEvent } from '@vaadin/grid';
 import { Product } from '../products';
 import { Notification } from '@vaadin/notification';
 
@@ -55,9 +53,11 @@ export class CartComponent implements OnInit, DoCheck {
   paymentOptions = paymentOptions;
   items: Product[] = [];
 
+  selectedItems: Product[] = [];
+
   constructor(
     public cartService: CartService,
-    private formBuilder: FormBuilder,
+    private formBuilder: FormBuilder
   ) {}
 
   get nameField() {
