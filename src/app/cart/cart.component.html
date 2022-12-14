@@ -35,6 +35,11 @@
       <b style="color: red" *ngIf="model.item.price < 4">!</b>
     </ng-template>
   </vaadin-grid-sort-column>
+  <vaadin-grid-column header="Stock">
+    <ng-template #cell let-model="model">
+      <app-stock-info [product]="model.item"></app-stock-info>
+    </ng-template>
+  </vaadin-grid-column>
   <vaadin-grid-column header="Actions">
     <ng-template #cell let-model="model">
       <vaadin-button theme="icon" (click)="onRaisePrice(model.item)" style="margin-right: 8px">

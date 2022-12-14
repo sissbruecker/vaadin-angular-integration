@@ -17,6 +17,7 @@ import {
   VaadinTextFieldDirective,
 } from './vaadin.directive';
 import { NewsletterDialogComponent } from './newsletter-dialog/newsletter-dialog.component';
+import { StockInfoComponent } from './stock-info/stock-info.component';
 
 @NgModule({
   imports: [
@@ -40,6 +41,7 @@ import { NewsletterDialogComponent } from './newsletter-dialog/newsletter-dialog
     VaadinDialogFooterRendererDirective,
     VaadinGridRendererDirective,
     NewsletterDialogComponent,
+    StockInfoComponent,
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
