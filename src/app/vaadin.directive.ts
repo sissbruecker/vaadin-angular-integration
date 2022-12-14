@@ -4,7 +4,7 @@ import {
   ElementRef,
   EmbeddedViewRef,
   forwardRef,
-  NgZone,
+  NgZone, OnDestroy,
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
@@ -115,9 +115,11 @@ type RenderCallback = () => void;
 @Directive({
   selector: 'vaadin-grid-column',
 })
-export class VaadinGridRendererDirective {
+export class VaadinGridRendererDirective implements OnDestroy {
   static renderRequest: number | null = null;
   static renderTasks: RenderCallback[] = [];
+
+  private renderings: CellRendering[] = [];
 
   @ContentChild('cell')
   public set cell(template: TemplateRef<any>) {
@@ -143,7 +145,8 @@ export class VaadinGridRendererDirective {
         let rendering = CellRendering.fromCell(cell);
 
         if (!rendering) {
-          CellRendering.create(cell, this.viewContainerRef, template, model);
+          rendering = CellRendering.create(cell, this.viewContainerRef, template, model);
+          this.renderings.push(rendering);
         } else {
           rendering.update(model);
         }
@@ -165,6 +168,11 @@ export class VaadinGridRendererDirective {
       VaadinGridRendererDirective.renderRequest = null;
       VaadinGridRendererDirective.renderTasks = [];
     });
+  }
+
+  ngOnDestroy(): void {
+    // Destroy all Angular views created as part of cell rendering
+    this.renderings.forEach(rendering => rendering.destroy());
   }
 }
 
