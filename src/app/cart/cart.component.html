@@ -21,19 +21,18 @@
   <vaadin-grid-selection-column></vaadin-grid-selection-column>
   <vaadin-grid-sort-column path="name" header="Product">
     <ng-template #cell let-model="model">
-      <div>
         <b>{{model.item.name}}</b>
         <br>
         <i>{{model.item.description}}</i>
-      </div>
     </ng-template>
     <ng-template #footer>
-      <b>{{selectedItems.length}} products selected</b>
+      <b *ngIf="selectedItems.length > 0">{{selectedItems.length}} products selected</b>
     </ng-template>
   </vaadin-grid-sort-column>
   <vaadin-grid-sort-column path="price" header="Price">
     <ng-template #cell let-model="model">
       $ {{model.item.price.toFixed(2)}}
+      <b style="color: red" *ngIf="model.item.price < 4">!</b>
     </ng-template>
   </vaadin-grid-sort-column>
   <vaadin-grid-column header="Actions">

@@ -1,4 +1,5 @@
 import {
+  AfterViewChecked,
   ContentChild,
   Directive,
   ElementRef,
@@ -116,7 +117,9 @@ type RenderTask = () => void;
 @Directive({
   selector: 'vaadin-grid-column, vaadin-grid-sort-column',
 })
-export class VaadinGridRendererDirective implements OnDestroy {
+export class VaadinGridRendererDirective
+  implements OnDestroy, AfterViewChecked
+{
   static scheduler: RenderScheduler;
 
   private renderings: CellRendering[] = [];
@@ -223,6 +226,23 @@ export class VaadinGridRendererDirective implements OnDestroy {
     }
   }
 
+  ngAfterViewChecked(): void {
+    // TODO: Find reliable way of teleporting rendered DOM nodes to grid cells
+    // Templates that contain structural directives seem to detach / move
+    // rendered DOM nodes at times (during change detection?).
+    // This workaround should reattach the nodes to the grid cell after
+    // change detection.
+    this.renderings.forEach((rendering) => {
+      rendering.reattach();
+    });
+    if (this.headerRendering) {
+      this.headerRendering.reattach();
+    }
+    if (this.footerRendering) {
+      this.footerRendering.reattach();
+    }
+  }
+
   ngOnDestroy(): void {
     // Destroy all Angular views created as part of cell rendering
     this.renderings.forEach((rendering) => rendering.destroy());
@@ -261,16 +281,11 @@ class RenderScheduler {
 }
 
 class CellRendering {
-  private embeddedViewRef: EmbeddedViewRef<unknown>;
-  private context: { model: GridItemModel<unknown> };
-
   constructor(
-    embeddedViewRef: EmbeddedViewRef<unknown>,
-    context: { model: GridItemModel<unknown> }
-  ) {
-    this.embeddedViewRef = embeddedViewRef;
-    this.context = context;
-  }
+    private cell: HTMLElement,
+    private embeddedViewRef: EmbeddedViewRef<unknown>,
+    private context: { model: GridItemModel<unknown> }
+  ) {}
 
   static create(
     cell: HTMLElement,
@@ -288,7 +303,7 @@ class CellRendering {
 
     // Create rendering instance and store on grid cell
     // so that we can later access it to update data
-    const rendering = new CellRendering(embeddedViewRef, context);
+    const rendering = new CellRendering(cell, embeddedViewRef, context);
     (cell as any).__angularCellRendering = rendering;
 
     return rendering;
@@ -302,6 +317,15 @@ class CellRendering {
     // Just update the grid item model in the context, and
     // rely on change detection to update the Angular view
     this.context.model.item = model.item;
+  }
+
+  reattach() {
+    // If nodes have been removed from the grid cell, reattach them
+    if (!this.cell.firstChild) {
+      this.embeddedViewRef.rootNodes.forEach((rootNode) =>
+        this.cell.appendChild(rootNode)
+      );
+    }
   }
 
   destroy() {
