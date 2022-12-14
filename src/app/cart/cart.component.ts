@@ -1,5 +1,5 @@
 import {
-  Component,
+  Component, DoCheck,
   OnInit,
 } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
@@ -44,7 +44,7 @@ const paymentOptions: PaymentMethodOption[] = [
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css'],
 })
-export class CartComponent implements OnInit {
+export class CartComponent implements OnInit, DoCheck {
   checkoutForm = this.formBuilder.group({
     name: new FormControl('', [Validators.required, Validators.minLength(4)]),
     address: new FormControl('', [Validators.required]),
@@ -101,6 +101,10 @@ export class CartComponent implements OnInit {
     this.cartService.items$.subscribe((items) => {
       this.items = items;
     });
+  }
+
+  ngDoCheck(): void {
+    console.log('ngDoCheck');
   }
 
   onRemoveItem(item: Product) {

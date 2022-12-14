@@ -15,17 +15,88 @@
   <vaadin-button (click)="onSubmit()">Purchase</vaadin-button>
 </form>
 <br>
+
 <vaadin-grid [items]="items">
   <vaadin-grid-filter-column path="name"></vaadin-grid-filter-column>
-  <vaadin-grid-column path="price" [renderer]="priceRenderer"></vaadin-grid-column>
+  <vaadin-grid-column path="price"></vaadin-grid-column>
   <vaadin-grid-column>
-    <ng-template #cell let-item="model.item">
-      <vaadin-button theme="icon error" (click)="onRemoveItem(item)">
+    <ng-template #cell let-model="model">
+      <vaadin-button theme="icon error" (click)="onRemoveItem(model.item)">
         <vaadin-icon icon="vaadin:close-small"></vaadin-icon>
       </vaadin-button>
-      <vaadin-button theme="icon" (click)="updateMessage()">
-        <vaadin-icon icon="vaadin:refresh"></vaadin-icon>
+      <span>{{model.item.price}}</span>
+    </ng-template>
+  </vaadin-grid-column>
+  <vaadin-grid-column>
+    <ng-template #cell let-model="model">
+      <vaadin-button theme="icon error" (click)="onRemoveItem(model.item)">
+        <vaadin-icon icon="vaadin:close-small"></vaadin-icon>
       </vaadin-button>
+      <span>{{model.item.price}}</span>
+    </ng-template>
+  </vaadin-grid-column>
+  <vaadin-grid-column>
+    <ng-template #cell let-model="model">
+      <vaadin-button theme="icon error" (click)="onRemoveItem(model.item)">
+        <vaadin-icon icon="vaadin:close-small"></vaadin-icon>
+      </vaadin-button>
+      <span>{{model.item.price}}</span>
+    </ng-template>
+  </vaadin-grid-column>
+  <vaadin-grid-column>
+    <ng-template #cell let-model="model">
+      <vaadin-button theme="icon error" (click)="onRemoveItem(model.item)">
+        <vaadin-icon icon="vaadin:close-small"></vaadin-icon>
+      </vaadin-button>
+      <span>{{model.item.price}}</span>
+    </ng-template>
+  </vaadin-grid-column>
+  <vaadin-grid-column>
+    <ng-template #cell let-model="model">
+      <vaadin-button theme="icon error" (click)="onRemoveItem(model.item)">
+        <vaadin-icon icon="vaadin:close-small"></vaadin-icon>
+      </vaadin-button>
+      <span>{{model.item.price}}</span>
+    </ng-template>
+  </vaadin-grid-column>
+  <vaadin-grid-column>
+    <ng-template #cell let-model="model">
+      <vaadin-button theme="icon error" (click)="onRemoveItem(model.item)">
+        <vaadin-icon icon="vaadin:close-small"></vaadin-icon>
+      </vaadin-button>
+      <span>{{model.item.price}}</span>
+    </ng-template>
+  </vaadin-grid-column>
+  <vaadin-grid-column>
+    <ng-template #cell let-model="model">
+      <vaadin-button theme="icon error" (click)="onRemoveItem(model.item)">
+        <vaadin-icon icon="vaadin:close-small"></vaadin-icon>
+      </vaadin-button>
+      <span>{{model.item.price}}</span>
+    </ng-template>
+  </vaadin-grid-column>
+  <vaadin-grid-column>
+    <ng-template #cell let-model="model">
+      <vaadin-button theme="icon error" (click)="onRemoveItem(model.item)">
+        <vaadin-icon icon="vaadin:close-small"></vaadin-icon>
+      </vaadin-button>
+      <span>{{model.item.price}}</span>
+    </ng-template>
+  </vaadin-grid-column>
+  <vaadin-grid-column>
+    <ng-template #cell let-model="model">
+      <vaadin-button theme="icon error" (click)="onRemoveItem(model.item)">
+        <vaadin-icon icon="vaadin:close-small"></vaadin-icon>
+      </vaadin-button>
+      <span>{{model.item.price}}</span>
+    </ng-template>
+  </vaadin-grid-column>
+  <vaadin-grid-column>
+    <ng-template #cell let-model="model">
+      <vaadin-button theme="icon error" (click)="onRemoveItem(model.item)">
+        <vaadin-icon icon="vaadin:close-small"></vaadin-icon>
+      </vaadin-button>
+      <span>{{model.item.price}}</span>
     </ng-template>
   </vaadin-grid-column>
 </vaadin-grid>

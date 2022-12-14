@@ -2,6 +2,7 @@ import {
   ContentChild,
   Directive,
   ElementRef,
+  EmbeddedViewRef,
   forwardRef,
   NgZone,
   TemplateRef,
@@ -9,7 +10,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TextField } from '@vaadin/text-field';
-import { GridItemModel } from '@vaadin/grid';
+import { GridColumn, GridItemModel } from '@vaadin/grid';
 
 class VaadinValueFieldDirective implements ControlValueAccessor {
   constructor(private elementRef: ElementRef) {}
@@ -109,10 +110,15 @@ export class VaadinDialogFooterRendererDirective {
   }
 }
 
+type RenderCallback = () => void;
+
 @Directive({
   selector: 'vaadin-grid-column',
 })
 export class VaadinGridRendererDirective {
+  static renderRequest: number | null = null;
+  static renderTasks: RenderCallback[] = [];
+
   @ContentChild('cell')
   public set cell(template: TemplateRef<any>) {
     const column = this.elementRef.nativeElement;
@@ -123,33 +129,24 @@ export class VaadinGridRendererDirective {
     }
 
     column.renderer = (
-      root: HTMLElement,
-      _: unknown,
+      cell: HTMLElement,
+      _column: GridColumn,
       model: GridItemModel<unknown>
     ) => {
-      // Run rendering in Angular zone
-      // Otherwise change detection does not trigger after events
-      // initiated from rendered cell content (e.g. button clicks).
-      this.zone.run(() => {
-        const embeddedViewRef = this.viewContainerRef.createEmbeddedView(
-          template,
-          { model }
+      if (!VaadinGridRendererDirective.renderRequest) {
+        VaadinGridRendererDirective.renderRequest = requestAnimationFrame(
+          this.renderCells
         );
+      }
 
-        // Run change detection once and detach immediately.
-        // This avoids having to clean up the Angular view when the grid
-        // decides to discard or re-render the cell.
-        // This also prevents any future change detection, instead grid
-        // needs to be forced to re-render by changing its items, or
-        // invalidating cache when using a data provider.
-        // TODO: Check if views can be detached automatically when the view, or its cell, is removed from the DOM
-        embeddedViewRef.detectChanges();
-        embeddedViewRef.detach();
+      VaadinGridRendererDirective.renderTasks.push(() => {
+        let rendering = CellRendering.fromCell(cell);
 
-        root.innerHTML = '';
-        embeddedViewRef.rootNodes.forEach((rootNode) =>
-          root.appendChild(rootNode)
-        );
+        if (!rendering) {
+          CellRendering.create(cell, this.viewContainerRef, template, model);
+        } else {
+          rendering.update(model);
+        }
       });
     };
   }
@@ -158,7 +155,66 @@ export class VaadinGridRendererDirective {
     private elementRef: ElementRef,
     private viewContainerRef: ViewContainerRef,
     public zone: NgZone
-  ) {}
+  ) {
+    this.renderCells = this.renderCells.bind(this);
+  }
+
+  renderCells() {
+    this.zone.run(() => {
+      VaadinGridRendererDirective.renderTasks.forEach((task) => task());
+      VaadinGridRendererDirective.renderRequest = null;
+      VaadinGridRendererDirective.renderTasks = [];
+    });
+  }
+}
+
+class CellRendering {
+  private embeddedViewRef: EmbeddedViewRef<unknown>;
+  private context: { model: GridItemModel<unknown> };
+
+  constructor(
+    embeddedViewRef: EmbeddedViewRef<unknown>,
+    context: { model: GridItemModel<unknown> }
+  ) {
+    this.embeddedViewRef = embeddedViewRef;
+    this.context = context;
+  }
+
+  static create(
+    cell: HTMLElement,
+    viewRef: ViewContainerRef,
+    templateRef: TemplateRef<unknown>,
+    model: GridItemModel<unknown>
+  ) {
+    // Instantiate Angular view from template, passing grid item model as context
+    const context = { model };
+    const embeddedViewRef = viewRef.createEmbeddedView(templateRef, { model });
+
+    // Move rendered DOM nodes to grid cell
+    cell.innerHTML = '';
+    embeddedViewRef.rootNodes.forEach((rootNode) => cell.appendChild(rootNode));
+
+    // Create rendering instance and store on grid cell
+    // so that we can later access it to update data
+    const rendering = new CellRendering(embeddedViewRef, context);
+    (cell as any).__angularCellRendering = rendering;
+
+    return rendering;
+  }
+
+  static fromCell(cell: HTMLElement) {
+    return (cell as any).__angularCellRendering;
+  }
+
+  update(model: GridItemModel<unknown>) {
+    // Just update the grid item model in the context, and
+    // rely on change detection to update the Angular view
+    this.context.model.item = model.item;
+  }
+
+  destroy() {
+    this.embeddedViewRef.destroy();
+  }
 }
 
 @Directive({

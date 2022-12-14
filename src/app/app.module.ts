@@ -1,20 +1,22 @@
-import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
-import {RouterModule} from '@angular/router';
-import {ReactiveFormsModule} from '@angular/forms';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
 
-import {AppComponent} from './app.component';
-import {TopBarComponent} from './top-bar/top-bar.component';
-import {ProductListComponent} from './product-list/product-list.component';
-import {ProductAlertsComponent} from './product-alerts/product-alerts.component';
-import {CartComponent} from './cart/cart.component';
+import { AppComponent } from './app.component';
+import { TopBarComponent } from './top-bar/top-bar.component';
+import { ProductListComponent } from './product-list/product-list.component';
+import { ProductAlertsComponent } from './product-alerts/product-alerts.component';
+import { CartComponent } from './cart/cart.component';
 import {
   VaadinDialogFooterRendererDirective,
   VaadinDialogHeaderRendererDirective,
-  VaadinDialogRendererDirective, VaadinGridRendererDirective,
-  VaadinSelectDirective, VaadinSubmitButtonDirective,
-  VaadinTextFieldDirective
-} from "./vaadin.directive";
+  VaadinDialogRendererDirective,
+  VaadinGridRendererDirective,
+  VaadinSelectDirective,
+  VaadinSubmitButtonDirective,
+  VaadinTextFieldDirective,
+} from './vaadin.directive';
 import { NewsletterDialogComponent } from './newsletter-dialog/newsletter-dialog.component';
 
 @NgModule({
@@ -22,9 +24,9 @@ import { NewsletterDialogComponent } from './newsletter-dialog/newsletter-dialog
     BrowserModule,
     ReactiveFormsModule,
     RouterModule.forRoot([
-      {path: '', component: ProductListComponent},
-      {path: 'cart', component: CartComponent},
-    ])
+      { path: '', component: ProductListComponent },
+      { path: 'cart', component: CartComponent },
+    ]),
   ],
   declarations: [
     AppComponent,
@@ -41,14 +43,10 @@ import { NewsletterDialogComponent } from './newsletter-dialog/newsletter-dialog
     VaadinSubmitButtonDirective,
     NewsletterDialogComponent,
   ],
-  bootstrap: [
-    AppComponent
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppModule {
-}
-
+export class AppModule {}
 
 /*
 Copyright Google LLC. All Rights Reserved.
