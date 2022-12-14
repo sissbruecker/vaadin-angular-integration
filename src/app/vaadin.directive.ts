@@ -224,26 +224,3 @@ class CellRendering {
     this.embeddedViewRef.destroy();
   }
 }
-
-@Directive({
-  selector: '[vaadin-submit-button]',
-})
-export class VaadinSubmitButtonDirective {
-  constructor(private elementRef: ElementRef) {
-    const button = elementRef.nativeElement;
-    let parent = button.parentElement;
-
-    while (parent != null && parent.tagName !== 'FORM') {
-      parent = parent.parentElement;
-    }
-
-    if (parent) {
-      button.addEventListener('click', () => parent.submit());
-      parent.addEventListener('keypress', (e: KeyboardEvent) => {
-        if (e.key === 'Enter') {
-          button.click();
-        }
-      });
-    }
-  }
-}

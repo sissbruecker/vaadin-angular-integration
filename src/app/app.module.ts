@@ -14,7 +14,6 @@ import {
   VaadinDialogRendererDirective,
   VaadinGridRendererDirective,
   VaadinSelectDirective,
-  VaadinSubmitButtonDirective,
   VaadinTextFieldDirective,
 } from './vaadin.directive';
 import { NewsletterDialogComponent } from './newsletter-dialog/newsletter-dialog.component';
@@ -40,7 +39,6 @@ import { NewsletterDialogComponent } from './newsletter-dialog/newsletter-dialog
     VaadinDialogHeaderRendererDirective,
     VaadinDialogFooterRendererDirective,
     VaadinGridRendererDirective,
-    VaadinSubmitButtonDirective,
     NewsletterDialogComponent,
   ],
   bootstrap: [AppComponent],
