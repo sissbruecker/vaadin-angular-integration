@@ -4,7 +4,8 @@ import {
   ElementRef,
   EmbeddedViewRef,
   forwardRef,
-  NgZone, OnDestroy,
+  NgZone,
+  OnDestroy,
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
@@ -145,7 +146,12 @@ export class VaadinGridRendererDirective implements OnDestroy {
         let rendering = CellRendering.fromCell(cell);
 
         if (!rendering) {
-          rendering = CellRendering.create(cell, this.viewContainerRef, template, model);
+          rendering = CellRendering.create(
+            cell,
+            this.viewContainerRef,
+            template,
+            model
+          );
           this.renderings.push(rendering);
         } else {
           rendering.update(model);
@@ -172,7 +178,7 @@ export class VaadinGridRendererDirective implements OnDestroy {
 
   ngOnDestroy(): void {
     // Destroy all Angular views created as part of cell rendering
-    this.renderings.forEach(rendering => rendering.destroy());
+    this.renderings.forEach((rendering) => rendering.destroy());
   }
 }
 
@@ -210,7 +216,7 @@ class CellRendering {
     return rendering;
   }
 
-  static fromCell(cell: HTMLElement) {
+  static fromCell(cell: HTMLElement): CellRendering | undefined {
     return (cell as any).__angularCellRendering;
   }
 
