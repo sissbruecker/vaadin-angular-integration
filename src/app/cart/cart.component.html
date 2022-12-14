@@ -17,18 +17,21 @@
 <br>
 
 <vaadin-grid [items]="items">
-  <vaadin-grid-column header="Product">
+  <vaadin-grid-sort-column path="name" header="Product">
     <ng-template #cell let-model="model">
       <b>{{model.item.name}}</b>
       <br>
       <i>{{model.item.description}}</i>
     </ng-template>
-  </vaadin-grid-column>
-  <vaadin-grid-column header="Price">
+    <ng-template #footer>
+      <b>{{items.length}} total products</b>
+    </ng-template>
+  </vaadin-grid-sort-column>
+  <vaadin-grid-sort-column path="price" header="Price">
     <ng-template #cell let-model="model">
       $ {{model.item.price.toFixed(2)}}
     </ng-template>
-  </vaadin-grid-column>
+  </vaadin-grid-sort-column>
   <vaadin-grid-column header="Actions">
     <ng-template #cell let-model="model">
       <vaadin-button theme="icon" (click)="onRaisePrice(model.item)" style="margin-right: 8px">
@@ -38,7 +41,10 @@
         <vaadin-icon icon="vaadin:close-small"></vaadin-icon>
       </vaadin-button>
     </ng-template>
+    <ng-template #header>
+      <vaadin-button theme="icon" (click)="onRaiseAllPrices()" style="margin-right: 8px">
+        <vaadin-icon icon="vaadin:dollar"></vaadin-icon>
+      </vaadin-button>
+    </ng-template>
   </vaadin-grid-column>
 </vaadin-grid>
-
-<div>{{message}}</div>

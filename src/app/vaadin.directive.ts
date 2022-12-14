@@ -111,16 +111,17 @@ export class VaadinDialogFooterRendererDirective {
   }
 }
 
-type RenderCallback = () => void;
+type RenderTask = () => void;
 
 @Directive({
-  selector: 'vaadin-grid-column',
+  selector: 'vaadin-grid-column, vaadin-grid-sort-column',
 })
 export class VaadinGridRendererDirective implements OnDestroy {
-  static renderRequest: number | null = null;
-  static renderTasks: RenderCallback[] = [];
+  static scheduler: RenderScheduler;
 
   private renderings: CellRendering[] = [];
+  private headerRendering: CellRendering | undefined;
+  private footerRendering: CellRendering | undefined;
 
   @ContentChild('cell')
   public set cell(template: TemplateRef<any>) {
@@ -136,13 +137,7 @@ export class VaadinGridRendererDirective implements OnDestroy {
       _column: GridColumn,
       model: GridItemModel<unknown>
     ) => {
-      if (!VaadinGridRendererDirective.renderRequest) {
-        VaadinGridRendererDirective.renderRequest = requestAnimationFrame(
-          this.renderCells
-        );
-      }
-
-      VaadinGridRendererDirective.renderTasks.push(() => {
+      VaadinGridRendererDirective.scheduler.schedule(() => {
         let rendering = CellRendering.fromCell(cell);
 
         if (!rendering) {
@@ -160,25 +155,108 @@ export class VaadinGridRendererDirective implements OnDestroy {
     };
   }
 
+  @ContentChild('header')
+  public set header(template: TemplateRef<any>) {
+    const column = this.elementRef.nativeElement;
+
+    if (!template) {
+      column.headerRenderer = null;
+      return;
+    }
+
+    column.headerRenderer = (
+      cell: HTMLElement,
+      _column: GridColumn,
+      model: GridItemModel<unknown>
+    ) => {
+      VaadinGridRendererDirective.scheduler.schedule(() => {
+        if (!this.headerRendering) {
+          this.headerRendering = CellRendering.create(
+            cell,
+            this.viewContainerRef,
+            template,
+            model
+          );
+        } else {
+          this.headerRendering.update(model);
+        }
+      });
+    };
+  }
+
+  @ContentChild('footer')
+  public set footer(template: TemplateRef<any>) {
+    const column = this.elementRef.nativeElement;
+
+    if (!template) {
+      column.footerRenderer = null;
+      return;
+    }
+
+    column.footerRenderer = (
+      cell: HTMLElement,
+      _column: GridColumn,
+      model: GridItemModel<unknown>
+    ) => {
+      VaadinGridRendererDirective.scheduler.schedule(() => {
+        if (!this.footerRendering) {
+          this.footerRendering = CellRendering.create(
+            cell,
+            this.viewContainerRef,
+            template,
+            model
+          );
+        } else {
+          this.footerRendering.update(model);
+        }
+      });
+    };
+  }
+
   constructor(
     private elementRef: ElementRef,
     private viewContainerRef: ViewContainerRef,
     public zone: NgZone
   ) {
-    this.renderCells = this.renderCells.bind(this);
-  }
-
-  renderCells() {
-    this.zone.run(() => {
-      VaadinGridRendererDirective.renderTasks.forEach((task) => task());
-      VaadinGridRendererDirective.renderRequest = null;
-      VaadinGridRendererDirective.renderTasks = [];
-    });
+    if (!VaadinGridRendererDirective.scheduler) {
+      VaadinGridRendererDirective.scheduler = new RenderScheduler(zone);
+    }
   }
 
   ngOnDestroy(): void {
     // Destroy all Angular views created as part of cell rendering
     this.renderings.forEach((rendering) => rendering.destroy());
+    if (this.headerRendering) {
+      this.headerRendering.destroy();
+    }
+    if (this.footerRendering) {
+      this.footerRendering.destroy();
+    }
+  }
+}
+
+class RenderScheduler {
+  private tasks: RenderTask[] = [];
+  private renderRequest: number | null = null;
+
+  constructor(private zone: NgZone) {
+    this.render = this.render.bind(this);
+  }
+
+  schedule(task: RenderTask) {
+    if (!this.renderRequest) {
+      this.renderRequest = requestAnimationFrame(this.render);
+    }
+
+    this.tasks.push(task);
+  }
+
+  private render() {
+    this.zone.run(() => {
+      this.tasks.forEach((task) => task());
+      this.renderRequest = null;
+      this.tasks = [];
+    });
   }
 }
 

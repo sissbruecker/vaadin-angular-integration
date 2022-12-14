@@ -6,6 +6,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { CartService } from '../cart.service';
 import '@vaadin/grid';
 import '@vaadin/grid/vaadin-grid-filter-column.js';
+import '@vaadin/grid/vaadin-grid-sort-column.js';
 import '@vaadin/text-field';
 import '@vaadin/select';
 import '@vaadin/button';
@@ -53,8 +54,6 @@ export class CartComponent implements OnInit, DoCheck {
 
   paymentOptions = paymentOptions;
   items: Product[] = [];
-
-  message: string = 'Initial message';
 
   constructor(
     public cartService: CartService,
@@ -115,6 +114,10 @@ export class CartComponent implements OnInit, DoCheck {
     this.cartService.raisePrice(item);
   }
 
+  onRaiseAllPrices() {
+    this.cartService.raiseAllPrices();
+  }
+
   onSubmit(): void {
     // Process checkout data here
     this.checkoutForm.markAllAsTouched();
@@ -130,10 +133,6 @@ export class CartComponent implements OnInit, DoCheck {
       );
       this.checkoutForm.reset();
     }
-  }
-
-  updateMessage() {
-    this.message = this.message + ".";
   }
 
   priceRenderer(root: HTMLElement, _: unknown, model: GridItemModel<Product>) {
