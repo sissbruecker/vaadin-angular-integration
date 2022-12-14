@@ -10,9 +10,12 @@ import '@vaadin/select';
 import '@vaadin/button';
 import '@vaadin/icon';
 import '@vaadin/icons';
-import { GridItemModel, GridSelectedItemsChangedEvent } from '@vaadin/grid';
+import '@vaadin/menu-bar';
+import { GridItemModel } from '@vaadin/grid';
 import { Product } from '../products';
 import { Notification } from '@vaadin/notification';
+import { MenuBarItem, MenuBarItemSelectedEvent } from '@vaadin/menu-bar';
+import { SubMenuItem } from '@vaadin/menu-bar/src/vaadin-menu-bar';
 
 interface PaymentMethodOption {
   value: string;
@@ -49,11 +52,33 @@ export class CartComponent implements OnInit, DoCheck {
     address: new FormControl('', [Validators.required]),
     paymentMethod: new FormControl(null, [Validators.required]),
   });
-
   paymentOptions = paymentOptions;
-  items: Product[] = [];
 
+  items: Product[] = [];
   selectedItems: Product[] = [];
+
+  productColumnOption: SubMenuItem = {
+    text: 'Product',
+    checked: true,
+  };
+  priceColumnOption: SubMenuItem = {
+    text: 'Price',
+    checked: true,
+  };
+  stockColumnOption: SubMenuItem = {
+    text: 'Stock',
+    checked: true,
+  };
+  columnOptions: MenuBarItem[] = [
+    {
+      text: 'Columns',
+      children: [
+        this.productColumnOption,
+        this.priceColumnOption,
+        this.stockColumnOption,
+      ],
+    },
+  ];
 
   constructor(
     public cartService: CartService,
@@ -104,6 +129,12 @@ export class CartComponent implements OnInit, DoCheck {
 
   ngDoCheck(): void {
     console.log('ngDoCheck');
+  }
+
+  onColumnOptionSelected(e: MenuBarItemSelectedEvent) {
+    const item = e.detail.value as SubMenuItem;
+
+    item.checked = !item.checked;
   }
 
   onRemoveItem(item: Product) {

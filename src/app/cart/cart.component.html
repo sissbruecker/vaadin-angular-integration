@@ -16,26 +16,28 @@
 </form>
 <br>
 
+<vaadin-menu-bar [items]="columnOptions" (item-selected)="onColumnOptionSelected($event)"
+                 theme="end-aligned"></vaadin-menu-bar>
 <vaadin-grid [items]="items" [selectedItems]="selectedItems"
              (selected-items-changed)="selectedItems = $event.detail.value">
   <vaadin-grid-selection-column></vaadin-grid-selection-column>
-  <vaadin-grid-sort-column path="name" header="Product">
+  <vaadin-grid-sort-column path="name" header="Product" *ngIf="productColumnOption.checked">
     <ng-template #cell let-model="model">
-        <b>{{model.item.name}}</b>
-        <br>
-        <i>{{model.item.description}}</i>
+      <b>{{model.item.name}}</b>
+      <br>
+      <i>{{model.item.description}}</i>
     </ng-template>
     <ng-template #footer>
       <b *ngIf="selectedItems.length > 0">{{selectedItems.length}} products selected</b>
     </ng-template>
   </vaadin-grid-sort-column>
-  <vaadin-grid-sort-column path="price" header="Price">
+  <vaadin-grid-sort-column path="price" header="Price" *ngIf="priceColumnOption.checked">
     <ng-template #cell let-model="model">
       $ {{model.item.price.toFixed(2)}}
       <b style="color: red" *ngIf="model.item.price < 4">!</b>
     </ng-template>
   </vaadin-grid-sort-column>
-  <vaadin-grid-column header="Stock">
+  <vaadin-grid-column header="Stock" *ngIf="stockColumnOption.checked">
     <ng-template #cell let-model="model">
       <app-stock-info [product]="model.item"></app-stock-info>
     </ng-template>
