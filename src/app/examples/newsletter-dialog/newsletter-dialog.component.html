@@ -4,13 +4,14 @@
 </vaadin-button>
 
 <vaadin-dialog [opened]="dialogOpened" (opened-changed)="dialogOpened = $event.detail.value">
-  <h4 vaadin-dialog-header-renderer class="header">Newsletter Signup</h4>
-  <div vaadin-dialog-renderer>
+  <h4 #header class="header">Newsletter Signup</h4>
+  <div #content>
     <p>Enter your email below to sign up for our newsletter:</p>
     <vaadin-text-field [value]="newsletterMail"
                        (value-changed)="newsletterMail = $event.detail.value"></vaadin-text-field>
+    <div *ngIf="newsletterMail.length == 0">You have a long name</div>
   </div>
-  <vaadin-horizontal-layout vaadin-dialog-footer-renderer theme="spacing">
+  <vaadin-horizontal-layout #footer theme="spacing">
     <vaadin-button (click)="cancel()">Cancel</vaadin-button>
     <vaadin-button theme="primary" (click)="signup()">Sign up</vaadin-button>
   </vaadin-horizontal-layout>

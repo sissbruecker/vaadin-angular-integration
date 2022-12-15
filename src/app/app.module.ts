@@ -13,9 +13,7 @@ import {
 } from './vaadin.directive';
 import {VaadinGridRendererDirective} from "./vaadin-grid.directives";
 import {
-  VaadinDialogFooterRendererDirective,
-  VaadinDialogHeaderRendererDirective,
-  VaadinDialogRendererDirective
+  VaadinDialogDirective
 } from "./vaadin-dialog.directive";
 
 @NgModule({
@@ -33,9 +31,7 @@ import {
     ProductListComponent,
     VaadinTextFieldDirective,
     VaadinSelectDirective,
-    VaadinDialogRendererDirective,
-    VaadinDialogHeaderRendererDirective,
-    VaadinDialogFooterRendererDirective,
+    VaadinDialogDirective,
     VaadinGridRendererDirective,
     StockInfoComponent,
     NewsletterDialogComponent,

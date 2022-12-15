@@ -1,43 +1,48 @@
-import {Directive, ElementRef} from "@angular/core";
+import { ContentChild, Directive, ElementRef } from '@angular/core';
 
 @Directive({
-  selector: '[vaadin-dialog-renderer]',
+  selector: 'vaadin-dialog',
 })
-export class VaadinDialogRendererDirective {
-  constructor(private elementRef: ElementRef) {
-    const content = elementRef.nativeElement;
-    const dialog = content.parentElement;
+export class VaadinDialogDirective {
+  @ContentChild('content')
+  set content(contentRef: ElementRef<HTMLElement>) {
+    if (!contentRef) {
+      this.dialogElement.renderer = null;
+      return;
+    }
 
-    dialog.renderer = (root: HTMLElement) => {
-      root.appendChild(content);
+    this.dialogElement.renderer = (root: HTMLElement) => {
+      root.appendChild(contentRef.nativeElement);
     };
   }
-}
 
-@Directive({
-  selector: '[vaadin-dialog-header-renderer]',
-})
-export class VaadinDialogHeaderRendererDirective {
-  constructor(private elementRef: ElementRef) {
-    const content = elementRef.nativeElement;
-    const dialog = content.parentElement;
+  @ContentChild('header')
+  set header(headerRef: ElementRef<HTMLElement>) {
+    if (!headerRef) {
+      this.dialogElement.headerRenderer = null;
+      return;
+    }
 
-    dialog.headerRenderer = (root: HTMLElement) => {
-      root.appendChild(content);
+    this.dialogElement.headerRenderer = (root: HTMLElement) => {
+      root.appendChild(headerRef.nativeElement);
     };
   }
-}
 
-@Directive({
-  selector: '[vaadin-dialog-footer-renderer]',
-})
-export class VaadinDialogFooterRendererDirective {
-  constructor(private elementRef: ElementRef) {
-    const content = elementRef.nativeElement;
-    const dialog = content.parentElement;
+  @ContentChild('footer')
+  set footer(footerRef: ElementRef<HTMLElement>) {
+    if (!footerRef) {
+      this.dialogElement.footerRenderer = null;
+      return;
+    }
 
-    dialog.footerRenderer = (root: HTMLElement) => {
-      root.appendChild(content);
+    this.dialogElement.footerRenderer = (root: HTMLElement) => {
+      root.appendChild(footerRef.nativeElement);
     };
   }
+
+  private get dialogElement() {
+    return this.elementRef.nativeElement;
+  }
+
+  constructor(private elementRef: ElementRef) {}
 }
