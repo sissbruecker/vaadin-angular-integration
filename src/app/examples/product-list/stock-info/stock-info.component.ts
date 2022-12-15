@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Product } from '../products';
+import { Product } from '../model';
 import '@vaadin/progress-bar';
 
 @Component({

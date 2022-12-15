@@ -1,6 +1,6 @@
 import { Component, DoCheck, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { CartService } from '../cart.service';
+import { CartService } from '../../src/app/cart.service';
 import '@vaadin/grid';
 import '@vaadin/grid/vaadin-grid-filter-column.js';
 import '@vaadin/grid/vaadin-grid-sort-column.js';
@@ -12,7 +12,7 @@ import '@vaadin/icon';
 import '@vaadin/icons';
 import '@vaadin/menu-bar';
 import { GridItemModel } from '@vaadin/grid';
-import { Product } from '../products';
+import { Product } from '../../src/app/examples/product-list/model';
 import { Notification } from '@vaadin/notification';
 import { MenuBarItem, MenuBarItemSelectedEvent } from '@vaadin/menu-bar';
 import { SubMenuItem } from '@vaadin/menu-bar/src/vaadin-menu-bar';

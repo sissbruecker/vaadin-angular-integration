@@ -1,0 +1,42 @@
+<vaadin-menu-bar [items]="columnOptions" (item-selected)="toggleColumn($event)"
+                 theme="end-aligned"></vaadin-menu-bar>
+<vaadin-grid [items]="products" [selectedItems]="selectedProducts"
+             (selected-items-changed)="selectedProducts = $event.detail.value">
+  <vaadin-grid-selection-column></vaadin-grid-selection-column>
+  <vaadin-grid-sort-column path="name" header="Product" *ngIf="productColumnOption.checked">
+    <ng-template #cell let-item="row.item">
+      <b>{{item.name}}</b>
+      <br>
+      <i>{{item.description}}</i>
+    </ng-template>
+    <ng-template #footer>
+      <b *ngIf="selectedProducts.length > 0">{{selectedProducts.length}} products selected</b>
+    </ng-template>
+  </vaadin-grid-sort-column>
+  <vaadin-grid-sort-column path="price" header="Price" *ngIf="priceColumnOption.checked">
+    <ng-template #cell let-item="row.item">
+      $ {{item.price.toFixed(2)}}
+      <b style="color: red" *ngIf="item.price < 4">!</b>
+    </ng-template>
+  </vaadin-grid-sort-column>
+  <vaadin-grid-column header="Stock" *ngIf="stockColumnOption.checked">
+    <ng-template #cell let-item="row.item">
+      <app-stock-info [product]="item"></app-stock-info>
+    </ng-template>
+  </vaadin-grid-column>
+  <vaadin-grid-column header="Actions">
+    <ng-template #cell let-item="row.item">
+      <vaadin-button theme="icon" (click)="raisePrice(item)" style="margin-right: 8px">
+        <vaadin-icon icon="vaadin:dollar"></vaadin-icon>
+      </vaadin-button>
+      <vaadin-button theme="icon error" (click)="removeProduct(item)">
+        <vaadin-icon icon="vaadin:close-small"></vaadin-icon>
+      </vaadin-button>
+    </ng-template>
+    <ng-template #header>
+      <vaadin-button theme="icon" (click)="raiseAllPrices()" style="margin-right: 8px">
+        <vaadin-icon icon="vaadin:dollar"></vaadin-icon>
+      </vaadin-button>
+    </ng-template>
+  </vaadin-grid-column>
+</vaadin-grid>
