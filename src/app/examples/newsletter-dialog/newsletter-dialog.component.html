@@ -7,9 +7,23 @@
   <h4 #header class="header">Newsletter Signup</h4>
   <div #content>
     <p>Enter your email below to sign up for our newsletter:</p>
-    <vaadin-text-field [value]="newsletterMail"
-                       (value-changed)="newsletterMail = $event.detail.value"></vaadin-text-field>
-    <div *ngIf="newsletterMail.length == 0">You have a long name</div>
+    <vaadin-text-field [value]="mail"
+                       (value-changed)="mail = $event.detail.value"></vaadin-text-field>
+    <br>
+    <vaadin-checkbox [checked]="showOptions" (change)="showOptions = !showOptions">
+      Show advanced options
+    </vaadin-checkbox>
+    <div *ngIf="showOptions">
+      <vaadin-checkbox [checked]="options.marketing" (change)="options.marketing = !options.marketing">
+        Marketing
+      </vaadin-checkbox>
+      <vaadin-checkbox [checked]="options.releases" (change)="options.releases = !options.releases">
+        Releases
+      </vaadin-checkbox>
+      <vaadin-checkbox [checked]="options.blog" (change)="options.blog = !options.blog">
+        Blog Posts
+      </vaadin-checkbox>
+    </div>
   </div>
   <vaadin-horizontal-layout #footer theme="spacing">
     <vaadin-button (click)="cancel()">Cancel</vaadin-button>
