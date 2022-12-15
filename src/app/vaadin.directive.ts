@@ -128,31 +128,35 @@ export class VaadinGridRendererDirective
 
   @ContentChild('cell')
   public set cell(template: TemplateRef<any>) {
-    const column = this.elementRef.nativeElement;
+    const columnElement = this.elementRef.nativeElement;
 
     if (!template) {
-      column.renderer = null;
+      columnElement.renderer = null;
       return;
     }
 
-    column.renderer = (
+    columnElement.renderer = (
       cell: HTMLElement,
-      _column: GridColumn,
+      column: GridColumn,
       model: GridItemModel<unknown>
     ) => {
       VaadinGridRendererDirective.scheduler.schedule(() => {
         let rendering = CellRendering.fromCell(cell);
+        const context: CellRenderingContext = {
+          column,
+          row: model,
+        };
 
         if (!rendering) {
           rendering = CellRendering.create(
             cell,
             this.viewContainerRef,
             template,
-            model
+            context
           );
           this.renderings.push(rendering);
         } else {
-          rendering.update(model);
+          rendering.update(context);
         }
       });
     };
@@ -160,28 +164,26 @@ export class VaadinGridRendererDirective
 
   @ContentChild('header')
   public set header(template: TemplateRef<any>) {
-    const column = this.elementRef.nativeElement;
+    const columnElement = this.elementRef.nativeElement;
 
     if (!template) {
-      column.headerRenderer = null;
+      columnElement.headerRenderer = null;
       return;
     }
 
-    column.headerRenderer = (
-      cell: HTMLElement,
-      _column: GridColumn,
-      model: GridItemModel<unknown>
-    ) => {
+    columnElement.headerRenderer = (cell: HTMLElement, column: GridColumn) => {
+      const context: CellRenderingContext = { column };
+
       VaadinGridRendererDirective.scheduler.schedule(() => {
         if (!this.headerRendering) {
           this.headerRendering = CellRendering.create(
             cell,
             this.viewContainerRef,
             template,
-            model
+            context
           );
         } else {
-          // this.headerRendering.update(model);
+          this.headerRendering.update(context);
         }
       });
     };
@@ -189,28 +191,26 @@ export class VaadinGridRendererDirective
 
   @ContentChild('footer')
   public set footer(template: TemplateRef<any>) {
-    const column = this.elementRef.nativeElement;
+    const columnElement = this.elementRef.nativeElement;
 
     if (!template) {
-      column.footerRenderer = null;
+      columnElement.footerRenderer = null;
       return;
     }
 
-    column.footerRenderer = (
-      cell: HTMLElement,
-      _column: GridColumn,
-      model: GridItemModel<unknown>
-    ) => {
+    columnElement.footerRenderer = (cell: HTMLElement, column: GridColumn) => {
       VaadinGridRendererDirective.scheduler.schedule(() => {
+        const context: CellRenderingContext = { column };
+
         if (!this.footerRendering) {
           this.footerRendering = CellRendering.create(
             cell,
             this.viewContainerRef,
             template,
-            model
+            context
           );
         } else {
-          // this.footerRendering.update(model);
+          this.footerRendering.update(context);
         }
       });
     };
@@ -280,7 +280,10 @@ class RenderScheduler {
   }
 }
 
-type CellRenderingContext = { row: GridItemModel<unknown> };
+interface CellRenderingContext {
+  row?: GridItemModel<unknown>;
+  column: GridColumn<unknown>;
+}
 
 class CellRendering {
   constructor(
@@ -293,11 +296,13 @@ class CellRendering {
     cell: HTMLElement,
     viewRef: ViewContainerRef,
     templateRef: TemplateRef<unknown>,
-    model: GridItemModel<unknown>
+    initialContext: CellRenderingContext
   ) {
     // Instantiate Angular view from template, passing grid item model as context
-    const context: CellRenderingContext = { row: model };
-    const embeddedViewRef = viewRef.createEmbeddedView(templateRef, context);
+    const embeddedViewRef = viewRef.createEmbeddedView(
+      templateRef,
+      initialContext
+    );
 
     // Move rendered DOM nodes to grid cell
     cell.innerHTML = '';
@@ -305,7 +310,7 @@ class CellRendering {
 
     // Create rendering instance and store on grid cell
     // so that we can later access it to update data
-    const rendering = new CellRendering(cell, embeddedViewRef, context);
+    const rendering = new CellRendering(cell, embeddedViewRef, initialContext);
     (cell as any).__angularCellRendering = rendering;
 
     return rendering;
@@ -315,10 +320,10 @@ class CellRendering {
     return (cell as any).__angularCellRendering;
   }
 
-  update(model: GridItemModel<unknown>) {
+  update(context: CellRenderingContext) {
     // Just update the grid item model in the context, and
     // rely on change detection to update the Angular view
-    this.context.row = model;
+    Object.assign(this.context, context);
   }
 
   reattach() {
