@@ -280,11 +280,13 @@ class RenderScheduler {
   }
 }
 
+type CellRenderingContext = { row: GridItemModel<unknown> };
+
 class CellRendering {
   constructor(
     private cell: HTMLElement,
     private embeddedViewRef: EmbeddedViewRef<unknown>,
-    private context: { model: GridItemModel<unknown> }
+    private context: CellRenderingContext
   ) {}
 
   static create(
@@ -294,8 +296,8 @@ class CellRendering {
     model: GridItemModel<unknown>
   ) {
     // Instantiate Angular view from template, passing grid item model as context
-    const context = { model };
-    const embeddedViewRef = viewRef.createEmbeddedView(templateRef, { model });
+    const context: CellRenderingContext = { row: model };
+    const embeddedViewRef = viewRef.createEmbeddedView(templateRef, context);
 
     // Move rendered DOM nodes to grid cell
     cell.innerHTML = '';
@@ -316,7 +318,7 @@ class CellRendering {
   update(model: GridItemModel<unknown>) {
     // Just update the grid item model in the context, and
     // rely on change detection to update the Angular view
-    this.context.model.item = model.item;
+    this.context.row = model;
   }
 
   reattach() {

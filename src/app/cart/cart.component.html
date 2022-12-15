@@ -22,32 +22,32 @@
              (selected-items-changed)="selectedItems = $event.detail.value">
   <vaadin-grid-selection-column></vaadin-grid-selection-column>
   <vaadin-grid-sort-column path="name" header="Product" *ngIf="productColumnOption.checked">
-    <ng-template #cell let-model="model">
-      <b>{{model.item.name}}</b>
+    <ng-template #cell let-item="row.item">
+      <b>{{item.name}}</b>
       <br>
-      <i>{{model.item.description}}</i>
+      <i>{{item.description}}</i>
     </ng-template>
     <ng-template #footer>
       <b *ngIf="selectedItems.length > 0">{{selectedItems.length}} products selected</b>
     </ng-template>
   </vaadin-grid-sort-column>
   <vaadin-grid-sort-column path="price" header="Price" *ngIf="priceColumnOption.checked">
-    <ng-template #cell let-model="model">
-      $ {{model.item.price.toFixed(2)}}
-      <b style="color: red" *ngIf="model.item.price < 4">!</b>
+    <ng-template #cell let-item="row.item">
+      $ {{item.price.toFixed(2)}}
+      <b style="color: red" *ngIf="item.price < 4">!</b>
     </ng-template>
   </vaadin-grid-sort-column>
   <vaadin-grid-column header="Stock" *ngIf="stockColumnOption.checked">
-    <ng-template #cell let-model="model">
-      <app-stock-info [product]="model.item"></app-stock-info>
+    <ng-template #cell let-item="row.item">
+      <app-stock-info [product]="item"></app-stock-info>
     </ng-template>
   </vaadin-grid-column>
   <vaadin-grid-column header="Actions">
-    <ng-template #cell let-model="model">
-      <vaadin-button theme="icon" (click)="onRaisePrice(model.item)" style="margin-right: 8px">
+    <ng-template #cell let-item="row.item">
+      <vaadin-button theme="icon" (click)="onRaisePrice(item)" style="margin-right: 8px">
         <vaadin-icon icon="vaadin:dollar"></vaadin-icon>
       </vaadin-button>
-      <vaadin-button theme="icon error" (click)="onRemoveItem(model.item)">
+      <vaadin-button theme="icon error" (click)="onRemoveItem(item)">
         <vaadin-icon icon="vaadin:close-small"></vaadin-icon>
       </vaadin-button>
     </ng-template>
