@@ -6,14 +6,17 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { ProductListComponent } from './examples/product-list/product-list.component';
 import { StockInfoComponent } from './examples/product-list/stock-info/stock-info.component';
+import { NewsletterDialogComponent } from './examples/newsletter-dialog/newsletter-dialog.component';
 import {
-  VaadinDialogFooterRendererDirective,
-  VaadinDialogHeaderRendererDirective,
-  VaadinDialogRendererDirective,
   VaadinSelectDirective,
   VaadinTextFieldDirective,
 } from './vaadin.directive';
 import {VaadinGridRendererDirective} from "./vaadin-grid.directives";
+import {
+  VaadinDialogFooterRendererDirective,
+  VaadinDialogHeaderRendererDirective,
+  VaadinDialogRendererDirective
+} from "./vaadin-dialog.directive";
 
 @NgModule({
   imports: [
@@ -22,6 +25,7 @@ import {VaadinGridRendererDirective} from "./vaadin-grid.directives";
     RouterModule.forRoot([
       { path: '', component: ProductListComponent },
       { path: 'examples/product-list', component: ProductListComponent },
+      { path: 'examples/newsletter-dialog', component: NewsletterDialogComponent },
     ]),
   ],
   declarations: [
@@ -34,6 +38,7 @@ import {VaadinGridRendererDirective} from "./vaadin-grid.directives";
     VaadinDialogFooterRendererDirective,
     VaadinGridRendererDirective,
     StockInfoComponent,
+    NewsletterDialogComponent,
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

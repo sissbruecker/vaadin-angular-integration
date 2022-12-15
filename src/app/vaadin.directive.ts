@@ -1,18 +1,6 @@
-import {
-  AfterViewChecked,
-  ContentChild,
-  Directive,
-  ElementRef,
-  EmbeddedViewRef,
-  forwardRef,
-  NgZone,
-  OnDestroy,
-  TemplateRef,
-  ViewContainerRef,
-} from '@angular/core';
+import { Directive, ElementRef, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TextField } from '@vaadin/text-field';
-import { GridColumn, GridItemModel } from '@vaadin/grid';
 
 class VaadinValueFieldDirective implements ControlValueAccessor {
   constructor(private elementRef: ElementRef) {}
@@ -67,47 +55,5 @@ export class VaadinTextFieldDirective extends VaadinValueFieldDirective {
 export class VaadinSelectDirective extends VaadinValueFieldDirective {
   constructor(elementRef: ElementRef) {
     super(elementRef);
-  }
-}
-
-@Directive({
-  selector: '[vaadin-dialog-renderer]',
-})
-export class VaadinDialogRendererDirective {
-  constructor(private elementRef: ElementRef) {
-    const content = elementRef.nativeElement;
-    const dialog = content.parentElement;
-
-    dialog.renderer = (root: HTMLElement) => {
-      root.appendChild(content);
-    };
-  }
-}
-
-@Directive({
-  selector: '[vaadin-dialog-header-renderer]',
-})
-export class VaadinDialogHeaderRendererDirective {
-  constructor(private elementRef: ElementRef) {
-    const content = elementRef.nativeElement;
-    const dialog = content.parentElement;
-
-    dialog.headerRenderer = (root: HTMLElement) => {
-      root.appendChild(content);
-    };
-  }
-}
-
-@Directive({
-  selector: '[vaadin-dialog-footer-renderer]',
-})
-export class VaadinDialogFooterRendererDirective {
-  constructor(private elementRef: ElementRef) {
-    const content = elementRef.nativeElement;
-    const dialog = content.parentElement;
-
-    dialog.footerRenderer = (root: HTMLElement) => {
-      root.appendChild(content);
-    };
   }
 }
