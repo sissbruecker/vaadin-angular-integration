@@ -10,19 +10,11 @@
     <vaadin-text-field [value]="mail"
                        (value-changed)="mail = $event.detail.value"></vaadin-text-field>
     <br>
-    <vaadin-checkbox [checked]="showOptions" (change)="showOptions = !showOptions">
-      Show advanced options
-    </vaadin-checkbox>
+    <vaadin-checkbox label="Show advanced options" [checked]="showOptions" (change)="showOptions = !showOptions"></vaadin-checkbox>
     <div *ngIf="showOptions">
-      <vaadin-checkbox [checked]="options.marketing" (change)="options.marketing = !options.marketing">
-        Marketing
-      </vaadin-checkbox>
-      <vaadin-checkbox [checked]="options.releases" (change)="options.releases = !options.releases">
-        Releases
-      </vaadin-checkbox>
-      <vaadin-checkbox [checked]="options.blog" (change)="options.blog = !options.blog">
-        Blog Posts
-      </vaadin-checkbox>
+      <vaadin-checkbox label="Marketing" [checked]="options.marketing" (change)="options.marketing = !options.marketing"></vaadin-checkbox>
+      <vaadin-checkbox label="Releases" [checked]="options.releases" (change)="options.releases = !options.releases"></vaadin-checkbox>
+      <vaadin-checkbox label="Blog Posts" [checked]="options.blog" (change)="options.blog = !options.blog"></vaadin-checkbox>
     </div>
   </div>
   <vaadin-horizontal-layout #footer theme="spacing">
