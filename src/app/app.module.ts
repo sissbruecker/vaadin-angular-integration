@@ -10,10 +10,10 @@ import {
   VaadinDialogFooterRendererDirective,
   VaadinDialogHeaderRendererDirective,
   VaadinDialogRendererDirective,
-  VaadinGridRendererDirective,
   VaadinSelectDirective,
   VaadinTextFieldDirective,
 } from './vaadin.directive';
+import {VaadinGridRendererDirective} from "./vaadin-grid.directives";
 
 @NgModule({
   imports: [
