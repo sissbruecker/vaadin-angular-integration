@@ -18,7 +18,7 @@ interface NewsletterOptions {
 })
 export class NewsletterDialogComponent {
   dialogOpened: boolean = false;
-  mail: string = '';
+  mail: string = '@vaadin.com';
   showOptions: boolean = false;
   options: NewsletterOptions = {
     marketing: true,
@@ -28,6 +28,12 @@ export class NewsletterDialogComponent {
 
   openDialog() {
     this.dialogOpened = true;
+  }
+
+
+  updateMail(value: string) {
+    console.log('update mail', value);
+    this.mail = value;
   }
 
   signup() {

@@ -26,6 +26,16 @@ class VaadinValueFieldDirective implements ControlValueAccessor {
   }
 }
 
+function cancelFirstChangeEventListener() {
+  let firstChange = true;
+  return (event: Event) => {
+    if (firstChange) {
+      firstChange = false;
+      event.stopImmediatePropagation();
+    }
+  };
+}
+
 @Directive({
   selector: 'vaadin-text-field',
   providers: [
@@ -39,6 +49,11 @@ class VaadinValueFieldDirective implements ControlValueAccessor {
 export class VaadinTextFieldDirective extends VaadinValueFieldDirective {
   constructor(elementRef: ElementRef) {
     super(elementRef);
+    // Cancel first changed event for web component setting its initial value
+    this.element.addEventListener(
+      'value-changed',
+      cancelFirstChangeEventListener()
+    );
   }
 }
 
