@@ -3,7 +3,11 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TextField } from '@vaadin/text-field';
 
 class VaadinValueFieldDirective implements ControlValueAccessor {
-  constructor(private elementRef: ElementRef) {}
+  constructor(private elementRef: ElementRef) {
+    // Disable internal validation logic of web component,
+    // so that we can control invalid state manually
+    this.element.validate = () => false;
+  }
 
   get element(): TextField {
     return this.elementRef.nativeElement;

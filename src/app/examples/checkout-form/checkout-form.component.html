@@ -1,0 +1,16 @@
+<form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+
+  <vaadin-text-field label="Name" formControlName="name"
+                     [invalid]="nameField.touched && nameField.invalid"
+                     [errorMessage]="nameErrors"></vaadin-text-field>
+  <br>
+  <vaadin-text-field label="Address" formControlName="address" [invalid]="addressField.touched && addressField.invalid"
+                     [errorMessage]="addressErrors"></vaadin-text-field>
+  <br>
+  <vaadin-select label="Payment Method" formControlName="paymentMethod" [items]="paymentOptions"
+                 [invalid]="paymentMethodField.touched && paymentMethodField.invalid"
+                 [errorMessage]="paymentMethodErrors" (blur)="paymentMethodField.markAsTouched()"></vaadin-select>
+  <br>
+
+  <vaadin-button (click)="onSubmit()">Purchase</vaadin-button>
+</form>

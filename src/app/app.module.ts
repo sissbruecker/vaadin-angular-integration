@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
+import { CheckoutFormComponent } from './examples/checkout-form/checkout-form.component';
 import { ProductListComponent } from './examples/product-list/product-list.component';
 import { StockInfoComponent } from './examples/product-list/stock-info/stock-info.component';
 import { NewsletterDialogComponent } from './examples/newsletter-dialog/newsletter-dialog.component';
@@ -24,6 +25,7 @@ import {
       { path: '', component: ProductListComponent },
       { path: 'examples/product-list', component: ProductListComponent },
       { path: 'examples/newsletter-dialog', component: NewsletterDialogComponent },
+      { path: 'examples/checkout-form', component: CheckoutFormComponent },
     ]),
   ],
   declarations: [
@@ -35,6 +37,7 @@ import {
     VaadinGridRendererDirective,
     StockInfoComponent,
     NewsletterDialogComponent,
+    CheckoutFormComponent,
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
