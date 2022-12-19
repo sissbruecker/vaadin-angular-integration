@@ -16,8 +16,8 @@ export class DateEditorComponent implements CustomGridEditor<Date | null> {
     return this.elementRef.nativeElement;
   }
 
-  get focusElement(): HTMLElement {
-    return this.datePicker.nativeElement;
+  focus() {
+    this.datePicker.nativeElement.focus();
   }
 
   formatDate(date: Date | null) {

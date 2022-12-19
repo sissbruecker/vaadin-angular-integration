@@ -4,28 +4,26 @@ import { GridProEditColumn } from '@vaadin/grid-pro/vaadin-grid-pro-edit-column'
 export interface CustomGridEditor<TValue> extends Component {
   value: TValue;
   nativeElement: HTMLElement;
-  focusElement?: HTMLElement;
+  focus?: () => void;
 }
 
 @Directive({
   selector: 'vaadin-grid-pro-edit-column',
 })
 export class VaadinGridProEditColumnDirective {
-  private _editor?: CustomGridEditor<any>;
-
   @Input('editor')
   set editor(editor: CustomGridEditor<any>) {
-    this._editor = editor;
     if (!editor) {
       this.column.editModeRenderer = null;
       return;
     }
 
-    // Patch editor element to delegate focus if custom focus element is defined
+    // Patch editor element to delegate focus to custom editor focus
+    // implementation if it has one
     let originalFocus = editor.nativeElement.focus;
     editor.nativeElement.focus = () => {
-      if (editor.focusElement) {
-        editor.focusElement.focus();
+      if (editor.focus) {
+        editor.focus();
       } else {
         originalFocus.apply(editor.nativeElement);
       }
