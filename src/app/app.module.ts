@@ -8,11 +8,12 @@ import { CheckoutFormComponent } from './examples/checkout-form/checkout-form.co
 import { ProductListComponent } from './examples/product-list/product-list.component';
 import { StockInfoComponent } from './examples/product-list/stock-info/stock-info.component';
 import { NewsletterDialogComponent } from './examples/newsletter-dialog/newsletter-dialog.component';
+import { EditableEmployeeListComponent } from './examples/editable-employee-list/editable-employee-list.component';
 import {
   VaadinSelectDirective,
   VaadinTextFieldDirective,
 } from './vaadin.directive';
-import {VaadinGridRendererDirective} from "./vaadin-grid.directives";
+import {VaadinGridRendererDirective} from "./vaadin-grid.directive";
 import {
   VaadinDialogDirective
 } from "./vaadin-dialog.directive";
@@ -26,6 +27,7 @@ import {
       { path: 'examples/product-list', component: ProductListComponent },
       { path: 'examples/newsletter-dialog', component: NewsletterDialogComponent },
       { path: 'examples/checkout-form', component: CheckoutFormComponent },
+      { path: 'examples/editable-employee-list', component: EditableEmployeeListComponent },
     ]),
   ],
   declarations: [
@@ -38,6 +40,7 @@ import {
     StockInfoComponent,
     NewsletterDialogComponent,
     CheckoutFormComponent,
+    EditableEmployeeListComponent,
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -2,15 +2,18 @@ import {
   AfterViewChecked,
   ContentChild,
   Directive,
-  ElementRef, EmbeddedViewRef, NgZone,
+  ElementRef,
+  EmbeddedViewRef,
+  NgZone,
   OnDestroy,
   TemplateRef,
-  ViewContainerRef
-} from "@angular/core";
-import {GridColumn, GridItemModel} from "@vaadin/grid";
+  ViewContainerRef,
+} from '@angular/core';
+import { GridColumn, GridItemModel } from '@vaadin/grid';
 
 @Directive({
-  selector: 'vaadin-grid-column, vaadin-grid-sort-column',
+  selector:
+    'vaadin-grid-column, vaadin-grid-sort-column, vaadin-grid-pro-edit-column',
 })
 export class VaadinGridRendererDirective
   implements OnDestroy, AfterViewChecked

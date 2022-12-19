@@ -1,0 +1,21 @@
+<vaadin-grid-pro [items]="this.employees">
+  <vaadin-grid-pro-edit-column path="name"></vaadin-grid-pro-edit-column>
+  <vaadin-grid-pro-edit-column path="email"></vaadin-grid-pro-edit-column>
+  <vaadin-grid-pro-edit-column path="department" editor-type="select"
+                               [editorOptions]="departmentOptions"></vaadin-grid-pro-edit-column>
+  <vaadin-grid-pro-edit-column path="hireDate">
+    <ng-template #cell let-item="row.item">
+      {{formatDate(item.hireDate)}}
+    </ng-template>
+  </vaadin-grid-pro-edit-column>
+  <vaadin-grid-pro-edit-column path="salary">
+    <ng-template #cell let-item="row.item">
+      <span class="salary-cell">${{item.salary}}</span>
+    </ng-template>
+  </vaadin-grid-pro-edit-column>
+  <vaadin-grid-pro-edit-column path="active" editor-type="checkbox" header="Status">
+    <ng-template #cell let-item="row.item">
+      {{item.active ? "Active" : "Inactive"}}
+    </ng-template>
+  </vaadin-grid-pro-edit-column>
+</vaadin-grid-pro>
