@@ -1,0 +1,8 @@
+:host {
+  display: inline-block;
+  width: 100%;
+}
+
+vaadin-date-picker {
+  width: 100%;
+}

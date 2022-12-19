@@ -1,0 +1,4 @@
+<vaadin-date-picker #datePicker
+                    [value]="formatDate(value)"
+                    (value-changed)="value = parseDate($event.detail.value)"
+></vaadin-date-picker>

@@ -180,12 +180,12 @@ class RenderScheduler {
   }
 }
 
-interface CellRenderingContext {
+export interface CellRenderingContext {
   row?: GridItemModel<unknown>;
   column: GridColumn<unknown>;
 }
 
-class CellRendering {
+export class CellRendering {
   constructor(
     private cell: HTMLElement,
     private embeddedViewRef: EmbeddedViewRef<unknown>,
@@ -204,14 +204,13 @@ class CellRendering {
       initialContext
     );
 
-    // Move rendered DOM nodes to grid cell
-    cell.innerHTML = '';
-    embeddedViewRef.rootNodes.forEach((rootNode) => cell.appendChild(rootNode));
-
     // Create rendering instance and store on grid cell
     // so that we can later access it to update data
     const rendering = new CellRendering(cell, embeddedViewRef, initialContext);
     (cell as any).__angularCellRendering = rendering;
+
+    // Move rendered DOM nodes to grid cell
+    rendering.attach();
 
     return rendering;
   }
@@ -233,6 +232,13 @@ class CellRendering {
         this.cell.appendChild(rootNode)
       );
     }
+  }
+
+  attach(cell: HTMLElement = this.cell) {
+    cell.innerHTML = '';
+    this.embeddedViewRef.rootNodes.forEach((rootNode) =>
+      cell.appendChild(rootNode)
+    );
   }
 
   destroy() {

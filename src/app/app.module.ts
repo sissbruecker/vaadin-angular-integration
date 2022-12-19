@@ -9,6 +9,7 @@ import { ProductListComponent } from './examples/product-list/product-list.compo
 import { StockInfoComponent } from './examples/product-list/stock-info/stock-info.component';
 import { NewsletterDialogComponent } from './examples/newsletter-dialog/newsletter-dialog.component';
 import { EditableEmployeeListComponent } from './examples/editable-employee-list/editable-employee-list.component';
+import { DateEditorComponent } from './examples/editable-employee-list/date-editor/date-editor.component';
 import {
   VaadinSelectDirective,
   VaadinTextFieldDirective,
@@ -17,6 +18,7 @@ import {VaadinGridRendererDirective} from "./vaadin-grid.directive";
 import {
   VaadinDialogDirective
 } from "./vaadin-dialog.directive";
+import {VaadinGridProEditColumnDirective} from "./vaadin-grid-pro.directive";
 
 @NgModule({
   imports: [
@@ -37,10 +39,12 @@ import {
     VaadinSelectDirective,
     VaadinDialogDirective,
     VaadinGridRendererDirective,
+    VaadinGridProEditColumnDirective,
     StockInfoComponent,
     NewsletterDialogComponent,
     CheckoutFormComponent,
     EditableEmployeeListComponent,
+    DateEditorComponent,
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
