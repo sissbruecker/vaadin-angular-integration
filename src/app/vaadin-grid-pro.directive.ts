@@ -1,7 +1,7 @@
-import { Component, Directive, ElementRef, Input } from '@angular/core';
+import { Directive, ElementRef, Input } from '@angular/core';
 import { GridProEditColumn } from '@vaadin/grid-pro/vaadin-grid-pro-edit-column';
 
-export interface CustomGridEditor<TValue> extends Component {
+export interface CustomGridEditor<TValue> {
   value: TValue;
   nativeElement: HTMLElement;
   focus?: () => void;
