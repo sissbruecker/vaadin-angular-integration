@@ -1,0 +1,8 @@
+<vaadin-number-field #numberField
+                     min="0"
+                     [value]="formatValue(value)"
+                     (value-changed)="value = parseValue($event.detail.value)">
+  <span slot="prefix">$</span>
+  <!-- Only using a custom slotted input here so that it can be targeted by CSS rules -->
+  <input type="number" slot="input">
+</vaadin-number-field>

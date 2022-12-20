@@ -1,0 +1,26 @@
+:host {
+  display: inline-block;
+  width: 100%;
+}
+
+vaadin-number-field {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0;
+  --lumo-border-radius-m: 0px;
+  box-shadow: inset 0 0 0 2px var(--lumo-primary-color-50pct);
+}
+
+vaadin-number-field > input {
+  text-align: right!important;
+}
+
+/* Disable keyboard navigation focus ring */
+vaadin-number-field[focus-ring]::part(input-field) {
+  box-shadow: none;
+}

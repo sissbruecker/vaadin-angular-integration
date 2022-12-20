@@ -10,13 +10,11 @@
     </ng-template>
     <app-date-editor #hireDateEditor style="width: 100%;"></app-date-editor>
   </vaadin-grid-pro-edit-column>
-  <vaadin-grid-pro-edit-column path="salary">
+  <vaadin-grid-pro-edit-column path="salary" [editor]="salaryEditor">
     <ng-template #cell let-item="row.item">
       <span class="salary-cell">${{item.salary}}</span>
     </ng-template>
-    <!--
-    <vaadin-number-field #editor></vaadin-number-field>
-    -->
+    <app-salary-editor #salaryEditor></app-salary-editor>
   </vaadin-grid-pro-edit-column>
   <vaadin-grid-pro-edit-column path="active" editor-type="checkbox" header="Status">
     <ng-template #cell let-item="row.item">
