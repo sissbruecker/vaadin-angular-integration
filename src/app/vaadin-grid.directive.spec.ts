@@ -49,6 +49,10 @@ describe('vaadin-grid.directive', () => {
             <span>{{ footerLabel }}</span>
           </ng-template>
         </vaadin-grid-column>
+        <!-- Removable column -->
+        <vaadin-grid-column header="F" *ngIf="!hideColumn">
+          <ng-template #cell let-item="row.item">F{{ item.index }}</ng-template>
+        </vaadin-grid-column>
       </vaadin-grid>
     `,
   })
@@ -56,6 +60,7 @@ describe('vaadin-grid.directive', () => {
     items: TestItem[] = [];
     headerLabel: string = 'Custom header';
     footerLabel: string = 'Custom footer';
+    hideColumn: boolean = false;
   }
 
   let fixture: ComponentFixture<TestComponent>;
@@ -79,13 +84,15 @@ describe('vaadin-grid.directive', () => {
     columnIndex: number
   ): HTMLElement {
     // Get TR element from index
-    const row: any = container.children[rowIndex];
+    const row = container.children[rowIndex];
     expect(row).withContext(`Row ${rowIndex} does not exist`).toBeTruthy();
     // Get TD/TH element from index
     const cell = row.children[columnIndex];
     expect(cell).withContext(`Cell ${columnIndex} does not exist`).toBeTruthy();
     // First child of each TD/TH is a slot, return first child within slot, which is a vaadin-grid-cell-content element
-    return cell.firstElementChild.assignedNodes()[0];
+    return (
+      cell.firstElementChild as HTMLSlotElement
+    ).assignedNodes()[0] as HTMLElement;
   }
 
   function getBodyCell(rowIndex: number, columnIndex: number): HTMLElement {
@@ -113,6 +120,16 @@ describe('vaadin-grid.directive', () => {
     const header = grid.$.footer;
 
     return getCell(header, 0, columnIndex);
+  }
+
+  function getColumnCount() {
+    // Assuming there is only one grid at a time
+    const grid = document.querySelector('vaadin-grid') as any;
+    // Get first row
+    const row: any = grid.$.items.children[0];
+    expect(row).withContext(`There are now rows`).toBeTruthy();
+    // Count cells in row
+    return row.children.length;
   }
 
   beforeEach(async () => {
@@ -305,6 +322,31 @@ describe('vaadin-grid.directive', () => {
       verifyFooter(1, '');
       verifyFooter(2, '');
       verifyFooter(3, '');
+    });
+  });
+
+  describe('removing and adding column', () => {
+    it('should remove and add column', async () => {
+      const initialColumnCount = getColumnCount();
+
+      // Hide column
+      fixture.componentInstance.hideColumn = true;
+      fixture.detectChanges();
+      await gridRender();
+
+      // Should not render cells for toggled column
+      expect(getColumnCount()).toEqual(initialColumnCount - 1);
+
+      // Show column again
+      fixture.componentInstance.hideColumn = false;
+      fixture.detectChanges();
+      await gridRender();
+
+      // Should render cells for toggled column
+      expect(getColumnCount()).toEqual(initialColumnCount);
+      expect(getBodyCell(0, 5).textContent).toEqual('F0');
+      expect(getBodyCell(1, 5).textContent).toEqual('F1');
+      expect(getBodyCell(2, 5).textContent).toEqual('F2');
     });
   });
 });
