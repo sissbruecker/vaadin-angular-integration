@@ -8,7 +8,7 @@
   <div #content>
     <p>Enter your email below to sign up for our newsletter:</p>
     <vaadin-text-field [value]="mail"
-                       (value-changed)="updateMail($event.detail.value)"></vaadin-text-field>
+                       (value-changed)="mail = $event.detail.value"></vaadin-text-field>
     <br>
     <vaadin-checkbox label="Show advanced options" [checked]="showOptions" (change)="showOptions = !showOptions"></vaadin-checkbox>
     <div *ngIf="showOptions">

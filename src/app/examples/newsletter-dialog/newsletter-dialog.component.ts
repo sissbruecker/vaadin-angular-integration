@@ -30,12 +30,6 @@ export class NewsletterDialogComponent {
     this.dialogOpened = true;
   }
 
-
-  updateMail(value: string) {
-    console.log('update mail', value);
-    this.mail = value;
-  }
-
   signup() {
     Notification.show(
       `${this.mail} signed up for newsletter ${JSON.stringify(this.options)}`,
