@@ -78,6 +78,11 @@ describe('vaadin-grid.directive', () => {
     fixture.detectChanges();
   }
 
+  function getGrid() {
+    // Assuming there is only one grid at a time
+    return document.querySelector('vaadin-grid') as any;
+  }
+
   function getCell(
     container: HTMLElement,
     rowIndex: number,
@@ -96,40 +101,38 @@ describe('vaadin-grid.directive', () => {
   }
 
   function getBodyCell(rowIndex: number, columnIndex: number): HTMLElement {
-    // Assuming there is only one grid at a time
-    const grid = document.querySelector('vaadin-grid') as any;
-    // Get table body
+    const grid = getGrid();
     const body = grid.$.items;
 
     return getCell(body, rowIndex, columnIndex);
   }
 
   function getHeaderCell(columnIndex: number): HTMLElement {
-    // Assuming there is only one grid at a time
-    const grid = document.querySelector('vaadin-grid') as any;
-    // Get table header
+    const grid = getGrid();
     const header = grid.$.header;
 
     return getCell(header, 0, columnIndex);
   }
 
   function getFooterCell(columnIndex: number): HTMLElement {
-    // Assuming there is only one grid at a time
-    const grid = document.querySelector('vaadin-grid') as any;
-    // Get table footer
+    const grid = getGrid();
     const footer = grid.$.footer;
 
     return getCell(footer, 0, columnIndex);
   }
 
   function getColumnCount() {
-    // Assuming there is only one grid at a time
-    const grid = document.querySelector('vaadin-grid') as any;
+    const grid = getGrid();
     // Get first row
     const row: any = grid.$.items.children[0];
     expect(row).withContext(`There are no rows`).toBeTruthy();
     // Count cells in row
     return row.children.length;
+  }
+
+  async function scrollToEnd() {
+    const grid = getGrid();
+    grid.scrollToIndex(grid.size - 1);
   }
 
   beforeEach(async () => {
@@ -347,6 +350,32 @@ describe('vaadin-grid.directive', () => {
       expect(getBodyCell(0, 5).textContent).toEqual('F0');
       expect(getBodyCell(1, 5).textContent).toEqual('F1');
       expect(getBodyCell(2, 5).textContent).toEqual('F2');
+    });
+  });
+
+  describe('scrolling', () => {
+    it('should update rendered cell content when scrolling', async () => {
+      // Add more items to be able to scroll
+      fixture.componentInstance.items = generateItems(100);
+      fixture.detectChanges();
+      await gridRender();
+
+      // Verify first rows are visible
+      const grid = getGrid();
+      let gridTextContent = grid.textContent;
+      expect(gridTextContent).toContain('A11');
+      expect(gridTextContent).toContain('A12');
+      expect(gridTextContent).toContain('A13');
+
+      // Scroll
+      await scrollToEnd();
+      await gridRender();
+
+      // Verify last rows are visible
+      gridTextContent = grid.textContent;
+      expect(gridTextContent).toContain('A97');
+      expect(gridTextContent).toContain('A98');
+      expect(gridTextContent).toContain('A99');
     });
   });
 });
