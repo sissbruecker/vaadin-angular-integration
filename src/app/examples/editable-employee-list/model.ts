@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 
 export enum Department {
-  PRODUCT_DEVELOPMENT = 'Product Development',
+  PRODUCT = 'Product',
   SALES = 'Sales',
   MARKETING = 'Marketing',
 }
@@ -25,9 +25,9 @@ export function generateEmployees(count: number): Employee[] {
     const email = `${firstName}.${lastName}@company.com`.toLowerCase();
     const hireDate = faker.date.past(10);
     const department = faker.helpers.arrayElement([
-      Department.PRODUCT_DEVELOPMENT,
+      Department.PRODUCT,
       Department.SALES,
-      Department.SALES,
+      Department.MARKETING,
     ]);
     const salary = faker.datatype.number({ min: 50000, max: 100000 });
     const active = faker.datatype.boolean();

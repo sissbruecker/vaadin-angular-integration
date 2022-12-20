@@ -14,7 +14,7 @@ export class EditableEmployeeListComponent {
   employees: Employee[] = generateEmployees(500);
   departmentOptions = [
     Department.MARKETING,
-    Department.PRODUCT_DEVELOPMENT,
+    Department.PRODUCT,
     Department.SALES,
   ];
 
