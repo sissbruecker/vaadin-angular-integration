@@ -37,13 +37,13 @@ describe('vaadin-grid.directive', () => {
             <span *ngIf="item.index >= 5">C{{ item.index }}</span>
           </ng-template>
         </vaadin-grid-column>
-        <!-- With header -->
+        <!-- With custom header -->
         <vaadin-grid-column header="D">
           <ng-template #header>
             <span>{{ headerLabel }}</span>
           </ng-template>
         </vaadin-grid-column>
-        <!-- With footer -->
+        <!-- With custom footer -->
         <vaadin-grid-column header="E">
           <ng-template #footer>
             <span>{{ footerLabel }}</span>
@@ -83,10 +83,10 @@ describe('vaadin-grid.directive', () => {
     rowIndex: number,
     columnIndex: number
   ): HTMLElement {
-    // Get TR element from index
+    // Get TR element from container
     const row = container.children[rowIndex];
     expect(row).withContext(`Row ${rowIndex} does not exist`).toBeTruthy();
-    // Get TD/TH element from index
+    // Get TD/TH element from row
     const cell = row.children[columnIndex];
     expect(cell).withContext(`Cell ${columnIndex} does not exist`).toBeTruthy();
     // First child of each TD/TH is a slot, return first child within slot, which is a vaadin-grid-cell-content element
@@ -117,9 +117,9 @@ describe('vaadin-grid.directive', () => {
     // Assuming there is only one grid at a time
     const grid = document.querySelector('vaadin-grid') as any;
     // Get table footer
-    const header = grid.$.footer;
+    const footer = grid.$.footer;
 
-    return getCell(header, 0, columnIndex);
+    return getCell(footer, 0, columnIndex);
   }
 
   function getColumnCount() {
@@ -127,7 +127,7 @@ describe('vaadin-grid.directive', () => {
     const grid = document.querySelector('vaadin-grid') as any;
     // Get first row
     const row: any = grid.$.items.children[0];
-    expect(row).withContext(`There are now rows`).toBeTruthy();
+    expect(row).withContext(`There are no rows`).toBeTruthy();
     // Count cells in row
     return row.children.length;
   }
@@ -143,15 +143,15 @@ describe('vaadin-grid.directive', () => {
 
   describe('body cells', () => {
     it('should render text node content in column A', () => {
-      const verifyTextContent = (rowIndex: number) => {
+      const verifyCellContent = (rowIndex: number) => {
         const cell = getBodyCell(rowIndex, 0);
         expect(cell.firstElementChild).toBeFalsy();
         expect(cell.textContent).toEqual(`A${rowIndex}`);
       };
 
-      verifyTextContent(0);
-      verifyTextContent(3);
-      verifyTextContent(6);
+      verifyCellContent(0);
+      verifyCellContent(3);
+      verifyCellContent(6);
     });
 
     it('should render updated text node content in column A', async () => {
@@ -162,19 +162,19 @@ describe('vaadin-grid.directive', () => {
       fixture.detectChanges();
       await gridRender();
 
-      const verifyTextContent = (rowIndex: number) => {
+      const verifyCellContent = (rowIndex: number) => {
         const cell = getBodyCell(rowIndex, 0);
         expect(cell.firstElementChild).toBeFalsy();
         expect(cell.textContent).toEqual(`A${rowIndex + 10}`);
       };
 
-      verifyTextContent(0);
-      verifyTextContent(3);
-      verifyTextContent(6);
+      verifyCellContent(0);
+      verifyCellContent(3);
+      verifyCellContent(6);
     });
 
     it('should render element content in column B', () => {
-      const verifyContent = (rowIndex: number) => {
+      const verifyCellContent = (rowIndex: number) => {
         const cell = getBodyCell(rowIndex, 1);
         expect(cell.children.length).toEqual(2);
         expect(cell.children[0].tagName).toEqual('B');
@@ -183,9 +183,9 @@ describe('vaadin-grid.directive', () => {
         expect(cell.children[1].textContent).toEqual(rowIndex.toString());
       };
 
-      verifyContent(0);
-      verifyContent(3);
-      verifyContent(6);
+      verifyCellContent(0);
+      verifyCellContent(3);
+      verifyCellContent(6);
     });
 
     it('should render updated element content in column B', async () => {
@@ -196,7 +196,7 @@ describe('vaadin-grid.directive', () => {
       fixture.detectChanges();
       await gridRender();
 
-      const verifyContent = (rowIndex: number) => {
+      const verifyCellContent = (rowIndex: number) => {
         const cell = getBodyCell(rowIndex, 1);
         expect(cell.children.length).toEqual(2);
         expect(cell.children[0].tagName).toEqual('B');
@@ -207,13 +207,13 @@ describe('vaadin-grid.directive', () => {
         );
       };
 
-      verifyContent(0);
-      verifyContent(3);
-      verifyContent(6);
+      verifyCellContent(0);
+      verifyCellContent(3);
+      verifyCellContent(6);
     });
 
     it('should render conditional content in column C', () => {
-      const verifyContent = (rowIndex: number, visible: boolean) => {
+      const verifyCellContent = (rowIndex: number, visible: boolean) => {
         const cell = getBodyCell(rowIndex, 2);
         if (visible) {
           expect(cell.children.length).toEqual(1);
@@ -225,11 +225,11 @@ describe('vaadin-grid.directive', () => {
         }
       };
       // First five rows have no content
-      verifyContent(0, false);
-      verifyContent(4, false);
+      verifyCellContent(0, false);
+      verifyCellContent(4, false);
       // Remaining rows have content
-      verifyContent(5, true);
-      verifyContent(9, true);
+      verifyCellContent(5, true);
+      verifyCellContent(9, true);
     });
 
     it('should render updated conditional content in column C', async () => {
@@ -240,7 +240,7 @@ describe('vaadin-grid.directive', () => {
       fixture.detectChanges();
       await gridRender();
 
-      const verifyContent = (rowIndex: number, visible: boolean) => {
+      const verifyCellContent = (rowIndex: number, visible: boolean) => {
         const cell = getBodyCell(rowIndex, 2);
         if (visible) {
           expect(cell.children.length).toEqual(1);
@@ -253,11 +253,11 @@ describe('vaadin-grid.directive', () => {
       };
 
       // First two rows have no content
-      verifyContent(0, false);
-      verifyContent(1, false);
+      verifyCellContent(0, false);
+      verifyCellContent(1, false);
       // Remaining rows have content
-      verifyContent(2, true);
-      verifyContent(3, true);
+      verifyCellContent(2, true);
+      verifyCellContent(3, true);
     });
   });
 
