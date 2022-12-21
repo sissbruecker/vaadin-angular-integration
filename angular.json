@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular-vaadin-demo": {
+    "vaadin-angular-integration": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/angular-vaadin-demo",
+            "outputPath": "dist/vaadin-angular-integration",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -60,10 +60,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "angular-vaadin-demo:build:production"
+              "browserTarget": "vaadin-angular-integration:build:production"
             },
             "development": {
-              "browserTarget": "angular-vaadin-demo:build:development"
+              "browserTarget": "vaadin-angular-integration:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -71,7 +71,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular-vaadin-demo:build"
+            "browserTarget": "vaadin-angular-integration:build"
           }
         },
         "test": {

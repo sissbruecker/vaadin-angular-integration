@@ -1,5 +1,5 @@
 {
-  "name": "angular-vaadin-demo",
+  "name": "vaadin-angular-integration",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",

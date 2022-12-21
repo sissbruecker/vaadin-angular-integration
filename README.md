@@ -1,6 +1,6 @@
-# Angular Vaadin Integration
+# Vaadin Angular Integration
 
-Demo application that integrates some Vaadin components with Angular.
+Prototype for integrating Vaadin components with Angular.
 
 ## Development server
 
