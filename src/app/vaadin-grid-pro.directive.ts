@@ -28,7 +28,7 @@ export class VaadinGridProEditColumnDirective {
         originalFocus.apply(editor.nativeElement);
       }
     };
-    // Create value property on custom editor element that delegates to
+    // Create value property on custom editor element that proxies to
     // value property of Angular component
     Object.defineProperty(editor.nativeElement, 'value', {
       get() {
