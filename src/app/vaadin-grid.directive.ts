@@ -15,30 +15,36 @@ import { GridColumn, GridItemModel } from '@vaadin/grid';
   selector:
     'vaadin-grid-column, vaadin-grid-sort-column, vaadin-grid-pro-edit-column',
 })
-export class VaadinGridRendererDirective
-  implements OnDestroy, AfterViewChecked
-{
-  static scheduler: RenderScheduler;
-
+export class VaadinGridColumnDirective implements OnDestroy, AfterViewChecked {
+  private _scheduler: RenderScheduler | null = null;
   private renderings: CellRendering[] = [];
   private headerRendering: CellRendering | undefined;
   private footerRendering: CellRendering | undefined;
 
+  get column() {
+    return this.elementRef.nativeElement;
+  }
+
+  get scheduler() {
+    if (!this._scheduler) {
+      this._scheduler = RenderScheduler.getOrCreate(this.column, this.zone);
+    }
+    return this._scheduler;
+  }
+
   @ContentChild('cell')
   public set cell(template: TemplateRef<any>) {
-    const columnElement = this.elementRef.nativeElement;
-
     if (!template) {
-      columnElement.renderer = null;
+      this.column.renderer = null;
       return;
     }
 
-    columnElement.renderer = (
+    this.column.renderer = (
       cell: HTMLElement,
       column: GridColumn,
       model: GridItemModel<unknown>
     ) => {
-      VaadinGridRendererDirective.scheduler.schedule(() => {
+      this.scheduler.schedule(() => {
         let rendering = CellRendering.fromCell(cell);
         const context: CellRenderingContext = {
           column,
@@ -62,17 +68,15 @@ export class VaadinGridRendererDirective
 
   @ContentChild('header')
   public set header(template: TemplateRef<any>) {
-    const columnElement = this.elementRef.nativeElement;
-
     if (!template) {
-      columnElement.headerRenderer = null;
+      this.column.headerRenderer = null;
       return;
     }
 
-    columnElement.headerRenderer = (cell: HTMLElement, column: GridColumn) => {
-      const context: CellRenderingContext = { column };
+    this.column.headerRenderer = (cell: HTMLElement, column: GridColumn) => {
+      this.scheduler.schedule(() => {
+        const context: CellRenderingContext = { column };
 
-      VaadinGridRendererDirective.scheduler.schedule(() => {
         if (!this.headerRendering) {
           this.headerRendering = CellRendering.create(
             cell,
@@ -89,15 +93,13 @@ export class VaadinGridRendererDirective
 
   @ContentChild('footer')
   public set footer(template: TemplateRef<any>) {
-    const columnElement = this.elementRef.nativeElement;
-
     if (!template) {
-      columnElement.footerRenderer = null;
+      this.column.footerRenderer = null;
       return;
     }
 
-    columnElement.footerRenderer = (cell: HTMLElement, column: GridColumn) => {
-      VaadinGridRendererDirective.scheduler.schedule(() => {
+    this.column.footerRenderer = (cell: HTMLElement, column: GridColumn) => {
+      this.scheduler.schedule(() => {
         const context: CellRenderingContext = { column };
 
         if (!this.footerRendering) {
@@ -117,12 +119,8 @@ export class VaadinGridRendererDirective
   constructor(
     private elementRef: ElementRef,
     private viewContainerRef: ViewContainerRef,
-    public zone: NgZone
-  ) {
-    if (!VaadinGridRendererDirective.scheduler) {
-      VaadinGridRendererDirective.scheduler = new RenderScheduler(zone);
-    }
-  }
+    private zone: NgZone
+  ) {}
 
   ngAfterViewChecked(): void {
     // TODO: Find reliable way of teleporting rendered DOM nodes to grid cells
@@ -131,13 +129,13 @@ export class VaadinGridRendererDirective
     // This workaround should reattach the nodes to the grid cell after
     // change detection.
     this.renderings.forEach((rendering) => {
-      rendering.reattach();
+      rendering.attach();
     });
     if (this.headerRendering) {
-      this.headerRendering.reattach();
+      this.headerRendering.attach();
     }
     if (this.footerRendering) {
-      this.footerRendering.reattach();
+      this.footerRendering.attach();
     }
   }
 
@@ -161,6 +159,19 @@ class RenderScheduler {
 
   constructor(private zone: NgZone) {
     this.render = this.render.bind(this);
+  }
+
+  static getOrCreate(column: GridColumn, zone: NgZone): RenderScheduler {
+    // Reuse same scheduler for all columns on the same grid
+    const grid = column.parentElement;
+    let scheduler = (grid as any).__angularRenderScheduler;
+
+    if (!scheduler) {
+      scheduler = new RenderScheduler(zone);
+      (grid as any).__angularRenderScheduler = scheduler;
+    }
+
+    return scheduler;
   }
 
   schedule(task: RenderTask) {
@@ -210,7 +221,7 @@ export class CellRendering {
     (cell as any).__angularCellRendering = rendering;
 
     // Move rendered DOM nodes to grid cell
-    rendering.attach();
+    rendering.attach(true);
 
     return rendering;
   }
@@ -225,20 +236,12 @@ export class CellRendering {
     Object.assign(this.context, context);
   }
 
-  reattach() {
-    // If nodes have been removed from the grid cell, reattach them
-    if (!this.cell.firstChild) {
+  attach(force: boolean = false) {
+    if (force || !this.cell.firstChild) {
       this.embeddedViewRef.rootNodes.forEach((rootNode) =>
         this.cell.appendChild(rootNode)
       );
     }
-  }
-
-  attach(cell: HTMLElement = this.cell) {
-    cell.innerHTML = '';
-    this.embeddedViewRef.rootNodes.forEach((rootNode) =>
-      cell.appendChild(rootNode)
-    );
   }
 
   destroy() {

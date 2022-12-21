@@ -15,7 +15,7 @@ import {
   VaadinSelectDirective,
   VaadinTextFieldDirective,
 } from './vaadin.directive';
-import { VaadinGridRendererDirective } from './vaadin-grid.directive';
+import { VaadinGridColumnDirective } from './vaadin-grid.directive';
 import { VaadinDialogDirective } from './vaadin-dialog.directive';
 import { VaadinGridProEditColumnDirective } from './vaadin-grid-pro.directive';
 
@@ -43,7 +43,7 @@ import { VaadinGridProEditColumnDirective } from './vaadin-grid-pro.directive';
     VaadinTextFieldDirective,
     VaadinSelectDirective,
     VaadinDialogDirective,
-    VaadinGridRendererDirective,
+    VaadinGridColumnDirective,
     VaadinGridProEditColumnDirective,
     StockInfoComponent,
     NewsletterDialogComponent,

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { VaadinGridRendererDirective } from './vaadin-grid.directive';
+import { VaadinGridColumnDirective } from './vaadin-grid.directive';
 import '@vaadin/grid';
 import { Grid } from '@vaadin/grid';
 import {
@@ -88,7 +88,7 @@ describe('vaadin-grid.directive', () => {
 
   beforeEach(async () => {
     fixture = TestBed.configureTestingModule({
-      declarations: [VaadinGridRendererDirective, TestComponent],
+      declarations: [VaadinGridColumnDirective, TestComponent],
     }).createComponent(TestComponent);
     fixture.componentInstance.items = generateItems(10);
     fixture.detectChanges();
