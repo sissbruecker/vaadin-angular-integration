@@ -14,6 +14,7 @@ import {
   getGridPro,
   gridRender,
 } from './tests/grid-helpers';
+import { VaadinGridColumnDirective } from './vaadin-grid.directive';
 
 interface Person {
   name: string;
@@ -46,6 +47,12 @@ describe('vaadin-grid-pro.directive', () => {
           [editor]="ageEditor"
         >
           <test-custom-editor #ageEditor></test-custom-editor>
+        </vaadin-grid-pro-edit-column>
+        <!-- With template -->
+        <vaadin-grid-pro-edit-column path="name" header="Name (Template)">
+          <ng-template #cell let-item="row.item">
+            <b>{{ item.name }}</b>
+          </ng-template>
         </vaadin-grid-pro-edit-column>
       </vaadin-grid-pro>
     `,
@@ -94,6 +101,7 @@ describe('vaadin-grid-pro.directive', () => {
   beforeEach(async () => {
     fixture = TestBed.configureTestingModule({
       declarations: [
+        VaadinGridColumnDirective,
         VaadinGridProEditColumnDirective,
         TestComponent,
         CustomEditor,
@@ -170,6 +178,23 @@ describe('vaadin-grid-pro.directive', () => {
 
       await gridRender(fixture);
       expect(getBodyCell(grid, 0, 1).textContent).toEqual('42');
+    });
+  });
+
+  describe('with template', () => {
+    it('should render template again after finishing editing', async () => {
+      let cell = getBodyCell(grid, 0, 2);
+      enter(cell);
+
+      const input = getEditorInput(grid, 0, 2);
+      write(input, 'Updated name');
+      enter(input);
+
+      await gridRender(fixture);
+      cell = getBodyCell(grid, 0, 2);
+      expect(cell.children.length).toEqual(1);
+      expect(cell.firstElementChild!.tagName).toEqual('B');
+      expect(cell.firstElementChild!.textContent).toEqual('Updated name');
     });
   });
 });

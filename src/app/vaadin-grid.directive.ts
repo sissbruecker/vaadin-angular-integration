@@ -1,5 +1,4 @@
 import {
-  AfterViewChecked,
   ContentChild,
   Directive,
   ElementRef,
@@ -15,7 +14,10 @@ import { GridColumn, GridItemModel } from '@vaadin/grid';
   selector:
     'vaadin-grid-column, vaadin-grid-sort-column, vaadin-grid-pro-edit-column',
 })
-export class VaadinGridColumnDirective implements OnDestroy, AfterViewChecked {
+export class VaadinGridColumnDirective implements OnDestroy {
+  private _cellTemplate?: TemplateRef<any>;
+  private _headerTemplate?: TemplateRef<any>;
+  private _footerTemplate?: TemplateRef<any>;
   private _scheduler: RenderScheduler | null = null;
   private renderings: CellRendering[] = [];
   private headerRendering: CellRendering | undefined;
@@ -34,10 +36,18 @@ export class VaadinGridColumnDirective implements OnDestroy, AfterViewChecked {
 
   @ContentChild('cell')
   public set cell(template: TemplateRef<any>) {
+    // Remove renderer when template is removed
     if (!template) {
       this.column.renderer = null;
       return;
     }
+    // Avoid re-defining the renderer function when the same template
+    // is set again. This seemingly can happen when using structural
+    // directives in the template.
+    if (this._cellTemplate === template) {
+      return;
+    }
+    this._cellTemplate = template;
 
     this.column.renderer = (
       cell: HTMLElement,
@@ -61,6 +71,12 @@ export class VaadinGridColumnDirective implements OnDestroy, AfterViewChecked {
           this.renderings.push(rendering);
         } else {
           rendering.update(context);
+
+          if (this.column.tagName === 'VAADIN-GRID-PRO-EDIT-COLUMN') {
+            // After finishing editing with grid pro the cell is emptied,
+            // so re-attach the previously rendered DOM nodes
+            rendering.attach();
+          }
         }
       });
     };
@@ -68,10 +84,18 @@ export class VaadinGridColumnDirective implements OnDestroy, AfterViewChecked {
 
   @ContentChild('header')
   public set header(template: TemplateRef<any>) {
+    // Remove renderer when template is removed
     if (!template) {
       this.column.headerRenderer = null;
       return;
     }
+    // Avoid re-defining the renderer function when the same template
+    // is set again. This seemingly can happen when using structural
+    // directives in the template.
+    if (this._headerTemplate === template) {
+      return;
+    }
+    this._headerTemplate = template;
 
     this.column.headerRenderer = (cell: HTMLElement, column: GridColumn) => {
       this.scheduler.schedule(() => {
@@ -93,10 +117,18 @@ export class VaadinGridColumnDirective implements OnDestroy, AfterViewChecked {
 
   @ContentChild('footer')
   public set footer(template: TemplateRef<any>) {
+    // Remove renderer when template is removed
     if (!template) {
       this.column.footerRenderer = null;
       return;
     }
+    // Avoid re-defining the renderer function when the same template
+    // is set again. This seemingly can happen when using structural
+    // directives in the template.
+    if (this._footerTemplate === template) {
+      return;
+    }
+    this._footerTemplate = template;
 
     this.column.footerRenderer = (cell: HTMLElement, column: GridColumn) => {
       this.scheduler.schedule(() => {
@@ -121,23 +153,6 @@ export class VaadinGridColumnDirective implements OnDestroy, AfterViewChecked {
     private viewContainerRef: ViewContainerRef,
     private zone: NgZone
   ) {}
-
-  ngAfterViewChecked(): void {
-    // TODO: Find reliable way of teleporting rendered DOM nodes to grid cells
-    // Templates that contain structural directives seem to detach / move
-    // rendered DOM nodes at times (during change detection?).
-    // This workaround should reattach the nodes to the grid cell after
-    // change detection.
-    this.renderings.forEach((rendering) => {
-      rendering.attach();
-    });
-    if (this.headerRendering) {
-      this.headerRendering.attach();
-    }
-    if (this.footerRendering) {
-      this.footerRendering.attach();
-    }
-  }
 
   ngOnDestroy(): void {
     // Destroy all Angular views created as part of cell rendering
@@ -221,7 +236,7 @@ export class CellRendering {
     (cell as any).__angularCellRendering = rendering;
 
     // Move rendered DOM nodes to grid cell
-    rendering.attach(true);
+    rendering.attach();
 
     return rendering;
   }
@@ -236,8 +251,10 @@ export class CellRendering {
     Object.assign(this.context, context);
   }
 
-  attach(force: boolean = false) {
-    if (force || !this.cell.firstChild) {
+  attach() {
+    // Sanity check: There shouldn't be a case where nodes
+    // need to be attached unless the cell itself is empty
+    if (!this.cell.firstChild) {
       this.embeddedViewRef.rootNodes.forEach((rootNode) =>
         this.cell.appendChild(rootNode)
       );
