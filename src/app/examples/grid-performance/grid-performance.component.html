@@ -1,0 +1,12 @@
+<vaadin-grid [items]="photos" [selectedItems]="selectedItems" (selected-items-changed)="handleSelectionChange($event)">
+  <vaadin-grid-selection-column></vaadin-grid-selection-column>
+  <vaadin-grid-sort-column path="id" header="Id" width="75px" flex-grow="0"></vaadin-grid-sort-column>
+  <vaadin-grid-sort-column path="title" header="Title"></vaadin-grid-sort-column>
+  <vaadin-grid-sort-column
+    path="url"
+    header="URL"
+  ></vaadin-grid-sort-column>
+</vaadin-grid>
+<div>
+  <span>Selected items: {{selectedItems.length}}</span>
+</div>

@@ -8,4 +8,13 @@ import '@vaadin/app-layout';
 })
 export class AppComponent {
   constructor() {}
+
+  detectionCounter = 0;
+
+  ngDoCheck() {
+    console.log(
+      `Change detection cycle #${++this.detectionCounter}`,
+      // Error().stack
+    );
+  }
 }

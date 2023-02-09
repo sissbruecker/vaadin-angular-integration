@@ -1,0 +1,16 @@
+<vaadin-grid [dataProvider]="dataProvider" class="albums">
+  <vaadin-grid-tree-column path="albumTitle" header="Album" item-has-children-path="hasChildren"></vaadin-grid-tree-column>
+  <vaadin-grid-sort-column
+    header="Photo"
+  >
+    <ng-template #cell let-item="row.item">
+      <a [href]="item.url">{{item.photoTitle}}</a>
+    </ng-template>
+  </vaadin-grid-sort-column>
+  <vaadin-grid-column header="Thumbnail">
+    <ng-template #cell let-item="row.item">
+      <img *ngIf="item.thumbnailUrl"
+        style="width: 50px; height: 50px" [src]="item.thumbnailUrl" alt="">
+    </ng-template>
+  </vaadin-grid-column>
+</vaadin-grid>

@@ -11,13 +11,18 @@ import { NewsletterDialogComponent } from './examples/newsletter-dialog/newslett
 import { EditableEmployeeListComponent } from './examples/editable-employee-list/editable-employee-list.component';
 import { DateEditorComponent } from './examples/editable-employee-list/date-editor/date-editor.component';
 import { SalaryEditorComponent } from './examples/editable-employee-list/salary-editor/salary-editor.component';
+import { GridPerformanceComponent } from './examples/grid-performance/grid-performance.component';
 import {
   VaadinSelectDirective,
   VaadinTextFieldDirective,
 } from './vaadin.directive';
-import { VaadinGridColumnDirective } from './vaadin-grid.directive';
+import {
+  VaadinGridDirective,
+  VaadinGridColumnDirective,
+} from './vaadin-grid.directive';
 import { VaadinDialogDirective } from './vaadin-dialog.directive';
 import { VaadinGridProEditColumnDirective } from './vaadin-grid-pro.directive';
+import {AlbumTreeViewComponent} from "./examples/album-tree-view/album-tree-view.component";
 
 @NgModule({
   imports: [
@@ -35,14 +40,24 @@ import { VaadinGridProEditColumnDirective } from './vaadin-grid-pro.directive';
         path: 'examples/editable-employee-list',
         component: EditableEmployeeListComponent,
       },
+      {
+        path: 'examples/album-tree-view',
+        component: AlbumTreeViewComponent,
+      },
+      {
+        path: 'examples/grid-performance',
+        component: GridPerformanceComponent,
+      },
     ]),
   ],
   declarations: [
     AppComponent,
+    GridPerformanceComponent,
     ProductListComponent,
     VaadinTextFieldDirective,
     VaadinSelectDirective,
     VaadinDialogDirective,
+    VaadinGridDirective,
     VaadinGridColumnDirective,
     VaadinGridProEditColumnDirective,
     StockInfoComponent,
@@ -51,6 +66,7 @@ import { VaadinGridProEditColumnDirective } from './vaadin-grid-pro.directive';
     EditableEmployeeListComponent,
     DateEditorComponent,
     SalaryEditorComponent,
+    AlbumTreeViewComponent,
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

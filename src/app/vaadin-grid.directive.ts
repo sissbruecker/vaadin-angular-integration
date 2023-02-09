@@ -10,6 +10,28 @@ import {
 } from '@angular/core';
 import { GridColumn, GridItemModel } from '@vaadin/grid';
 
+function patchOutChangeDetection(
+  zone: NgZone,
+  object: any,
+  functionName: string
+) {
+  const originalFunction = object[functionName];
+  const wrappedFunction = function (...args: any[]) {
+    zone.runOutsideAngular(() => originalFunction.apply(object, args));
+  };
+  object[functionName] = wrappedFunction;
+}
+
+@Directive({
+  selector: 'vaadin-grid',
+})
+export class VaadinGridDirective {
+  constructor(private elementRef: ElementRef, private zone: NgZone) {
+    const grid = elementRef.nativeElement;
+    patchOutChangeDetection(zone, grid, '_effectiveSizeChanged');
+  }
+}
+
 @Directive({
   selector:
     'vaadin-grid-column, vaadin-grid-sort-column, vaadin-grid-pro-edit-column',
